@@ -14,6 +14,7 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -28,6 +29,8 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
             'Respect\\Validation\\' => 19,
             'Respect\\Stringifier\\' => 20,
             'RedBeanPHP\\' => 11,
+            'Ramsey\\Uuid\\' => 12,
+            'Ramsey\\Collection\\' => 18,
         ),
         'P' =>
         array (
@@ -46,6 +49,10 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         'D' =>
         array (
             'Dotenv\\' => 7,
+        ),
+        'B' =>
+        array (
+            'Brick\\Math\\' => 11,
         ),
     );
 
@@ -73,6 +80,14 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         'RedBeanPHP\\' =>
         array (
             0 => __DIR__ . '/..' . '/gabordemooij/redbean/RedBeanPHP',
+        ),
+        'Ramsey\\Uuid\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/ramsey/uuid/src',
+        ),
+        'Ramsey\\Collection\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/ramsey/collection/src',
         ),
         'Psr\\Http\\Message\\' =>
         array (
@@ -110,6 +125,10 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         'Dotenv\\' =>
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
+        ),
+        'Brick\\Math\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/brick/math/src',
         ),
     );
 
