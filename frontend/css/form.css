@@ -1,0 +1,47 @@
+.login {
+    background: linear-gradient(#5c510987, #5c510987);
+}
+
+main {
+    width: 50%;
+    text-align: center;
+    margin: 2rem auto;
+    padding-top: 50%;
+    overflow: hidden;
+    height: 10rem;
+    background: #fff;
+    position: relative;
+    height: 95vh;
+}
+
+.moon-like-decor {
+    position: absolute;
+    border-radius: 100%;
+    width: 90%;
+    z-index: 0;
+    left: -20%;
+    background: linear-gradient(200deg,#fe4ffed3,#fe4ffe41,#fff,#fff);
+    top:-5%;
+    height: 40%;
+}
+
+.form{
+    text-align: center;
+    z-index: 5;
+    position: relative;
+    top: 5%;
+}
+
+
+
+
+@media screen and (max-width:768px) {
+    main {
+        width: 90%;
+    }
+}
+@media screen and (min-width:768px) {
+   .moon-like-decor{
+    height: 80%;
+   }
+}
