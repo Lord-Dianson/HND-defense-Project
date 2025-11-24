@@ -1,47 +1,90 @@
-.login {
-    background: linear-gradient(#5c510987, #5c510987);
-}
 
-main {
-    width: 50%;
-    text-align: center;
-    margin: 2rem auto;
-    padding-top: 50%;
-    overflow: hidden;
-    height: 10rem;
-    background: #fff;
-    position: relative;
-    height: 95vh;
-}
-
-.moon-like-decor {
-    position: absolute;
-    border-radius: 100%;
-    width: 90%;
-    z-index: 0;
-    left: -20%;
-    background: linear-gradient(200deg,#fe4ffed3,#fe4ffe41,#fff,#fff);
-    top:-5%;
-    height: 40%;
-}
-
-.form{
-    text-align: center;
-    z-index: 5;
-    position: relative;
-    top: 5%;
-}
-
-
-
-
-@media screen and (max-width:768px) {
-    main {
-        width: 90%;
+    body {
+      background: #f5f5f5;
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
     }
-}
-@media screen and (min-width:768px) {
-   .moon-like-decor{
-    height: 80%;
-   }
-}
+
+    .screen-wrapper {
+      max-width: 450px;
+      margin: auto;
+      min-height: 100vh;
+      background: #ffffff;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    .bg-arc {
+      width: 500px;
+      height: 700px;
+      background: linear-gradient(to bottom, #8ae79b, #ffffff);
+      border-radius: 50%;
+      position: absolute;
+      top: -320px;
+      left: -70px;
+      z-index: 1;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      padding: 40px 28px;
+      padding-top: 140px;
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    .form-control {
+      border-radius: 25px;
+      padding: 12px 18px;
+      border: 1px solid #d9d9d9;
+      font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+      border-color: #18a140;
+      box-shadow: 0 0 0 0.1rem rgba(24,161,64,0.25);
+    }
+
+    .signin-link {
+      color: #18a140;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn-submit {
+      background: linear-gradient(to right, #18a140, #4dd765);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 24px;
+      padding: 12px;
+      width: 100%;
+    }
+    .google-btn{
+      font-weight: 600;
+      border-radius: 24px;
+      padding: 12px;
+      width: 100%;
+    }
+    .google-btn:hover{
+      border: none;
+      color: #0e802e;
+    } 
+    .google-btn:active{
+      border:1,5px solid #0e802e;
+      color: #0e802e;
+    }
+
+
+
+    .btn-submit:hover {
+      background: linear-gradient(to right, #0e802e, #34c152);
+      color: #fff;
+    }

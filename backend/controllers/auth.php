@@ -4,7 +4,7 @@ require '../config/database.php'; // Include the database connection setup
 require '../utils/functions.php'; // Include utility functions
 
 // Example endpoint for login
-class LoginController {
+class AuthController {
     
     public function login($role, $credentials) {
         // Validate inputs
@@ -35,7 +35,7 @@ class LoginController {
 }
 
 // Assume this is how you're invoking the login method
-$controller = new LoginController();
+$controller = new AuthController();
 $result = $controller->login('admin', ['username' => 'john_doe', 'password' => 'securePassword123']);
 jsonResponse($result); // Return the JSON response
 ?>
