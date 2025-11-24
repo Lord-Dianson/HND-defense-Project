@@ -32,10 +32,24 @@ class AuthController {
             return jsonResponse(['success' => false, 'message' => 'Invalid credentials.'], 401);
         }
     }
+
+    public function signup($role,$credentials){
+             // find user using user credentials
+        if($role === 'agent'){
+            $user = R::findOne('Agent', 'email = ?', [$credentials['email']]);
+                            //table name, column name, user email value
+        }else{
+            $user = R::findOne('Student', 'email = ?', [$credentials['email']]);
+        }
+        
+        // Check if user exists after searching from the tables in db as in the code above
+        if (!$user) {
+            return jsonResponse(['success' => false, 'message' => 'User already exists'], 401);
+        }
+
+        // Hash the password before storing
+        $hashedPassword = password_hash($credentials['password'], PASSWORD_DEFAULT);
+    }
 }
 
-// Assume this is how you're invoking the login method
-$controller = new AuthController();
-$result = $controller->login('admin', ['username' => 'john_doe', 'password' => 'securePassword123']);
-jsonResponse($result); // Return the JSON response
 ?>
