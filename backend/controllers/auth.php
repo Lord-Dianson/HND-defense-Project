@@ -49,6 +49,26 @@ class AuthController {
 
         // Hash the password before storing
         $hashedPassword = password_hash($credentials['password'], PASSWORD_DEFAULT);
+        //Other user dettails
+        if($role === 'agent'){
+            $newUser = R::dispense('Agent');
+            $newUser->name = $credentials['name'];
+            $newUser->email = $credentials['email'];
+            $newUser->password = $hashedPassword;
+            $newUser->agency = $credentials['phone'];
+        }
+
+        else{
+            $newUser = R::dispense('Student');
+            $newUser->name = $credentials['name'];
+            $newUser->email = $credentials['email'];
+            $newUser->password = $hashedPassword;
+            $newUser->phone = $credentials['phone'];
+        }
+
+        //Send emaill to user for verification
+        $verificationCode = rand(100000, 999999); // Generate a 6
+        sendVerificationEmail($credentials['email'], $verificationCode);
     }
 }
 
