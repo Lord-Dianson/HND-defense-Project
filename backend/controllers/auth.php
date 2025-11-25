@@ -3,6 +3,9 @@ require '../vendor/autoload.php'; // Ensure Composer's autoload is included
 require '../config/database.php'; // Include the database connection setup
 require '../utils/functions.php'; // Include utility functions
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 // Example endpoint for login
 class AuthController {
     
@@ -68,7 +71,30 @@ class AuthController {
 
         //Send emaill to user for verification
         $verificationCode = rand(100000, 999999); // Generate a 6
-        sendVerificationEmail($credentials['email'], $verificationCode);
+
+        $mail = new PHPMailer(true);// set to true to enable debugging
+        try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.example.com'; // Your SMTP server
+        $mail->SMTPAuth = true;
+        $mail->Username = 'akulorddianson@gmail.com';
+        $mail->Password = 'your_password';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        $mail->setFrom('no-reply@example.com', 'Mailer');
+        $mail->addAddress('recipient@example.com', 'Recipient Name');
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Test Email';
+        $mail->Body    = '<b>Hello!</b> This is a test email.';
+        $mail->AltBody = 'Hello! This is a test email.';
+
+        $mail->send();
+        echo 'Message has been sent';
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }
 
