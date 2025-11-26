@@ -11,4 +11,8 @@ function validateLoginInput($role, $credentials) {
     }
     return true;
 }
+
+
+
+
 ?>

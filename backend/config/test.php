@@ -1,6 +1,8 @@
 <?php
-$randomNumber = rand(100000,999999);
-echo "Random Number: " . $randomNumber . "\n";
+require '../utils/sendEmail.php'; // Include email sending utility
+
+$result = sendEmailVerification('123456', 'Lord Dianson','akulorddianson@gmail.com');
+echo json_encode($result);
 
 /*
 // Adjust the path to the autoload.php file based on your directory structure

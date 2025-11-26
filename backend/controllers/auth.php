@@ -1,14 +1,15 @@
 <?php
+session_start();
+
 require '../vendor/autoload.php'; // Ensure Composer's autoload is included
 require '../config/database.php'; // Include the database connection setup
 require '../utils/functions.php'; // Include utility functions
+require '../utils/sendEmail.php'; // Include email sending utility
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
-// Example endpoint for login
 class AuthController {
     
+    //Public function for log in
     public function login($role, $credentials) {
         // Validate inputs
         if (!validateLoginInput($role,$credentials)) {
@@ -36,8 +37,42 @@ class AuthController {
         }
     }
 
-    public function signup($role,$credentials){
-             // find user using user credentials
+    //Public function for sign up
+    public function signup($credentials, $userOtpInput){
+
+        if($userOtpInput !== $credentials['verificationCode']) {
+            jsonResponse(['message' => 'Invalid OTP. Please try again.'], 400);
+            return 0;
+        };
+
+        $uuid4 = Uuid::uuid4(); // Generates a random UUID (v4)
+        //Other user dettails
+        if($credentials['role'] === 'agent'){
+            $newUser = R::dispense('Agent');
+            $newUser->id= $uuid4->toString(); 
+            $newUser->name = $credentials['name'];
+            $newUser->email = $credentials['email'];
+            $newUser->phone = $credentials['phone'];
+            $newUser->password = $credentials['password'];
+            $newUser->status = 'active';
+
+        }
+        else{
+            $newUser = R::dispense('Student');
+            $newUser->id= $uuid4->toString(); 
+            $newUser->name = $credentials['name'];
+            $newUser->email = $credentials['email'];
+            $newUser->phone = $credentials['phone'];
+            $newUser->password = $credentials['password'];
+        }
+
+        R::store($newUser);
+        jsonResponse(['success' => true, 'message' => 'User registered successfully.']);
+
+        }
+
+        public function verifyEmail($OTP, $role, $credentials){
+                     // find user using user credentials
         if($role === 'agent'){
             $user = R::findOne('Agent', 'email = ?', [$credentials['email']]);
                             //table name, column name, user email value
@@ -49,53 +84,21 @@ class AuthController {
         if (!$user) {
             return jsonResponse(['success' => false, 'message' => 'User already exists'], 401);
         }
+                //Send emaill to user for verification
+        $verificationCode = rand(100000, 999999); // Generate a random number
 
-        // Hash the password before storing
-        $hashedPassword = password_hash($credentials['password'], PASSWORD_DEFAULT);
-        //Other user dettails
-        if($role === 'agent'){
-            $newUser = R::dispense('Agent');
-            $newUser->name = $credentials['name'];
-            $newUser->email = $credentials['email'];
-            $newUser->password = $hashedPassword;
-            $newUser->agency = $credentials['phone'];
+        sendEmailVerification($verificationCode, $credentials['name'], $credentials['email']);
+
+        $_SESSION['user'] = [
+            'role' => $role,
+            'name' => $credentials['name'],
+            'email' => $credentials['email'],
+            'password' => password_hash($credentials['password'],PASSWORD_DEFAULT),
+            'phone' => $credentials['phone'],
+            'verificationCode' => $verificationCode
+        ];
+        
         }
-
-        else{
-            $newUser = R::dispense('Student');
-            $newUser->name = $credentials['name'];
-            $newUser->email = $credentials['email'];
-            $newUser->password = $hashedPassword;
-            $newUser->phone = $credentials['phone'];
-        }
-
-        //Send emaill to user for verification
-        $verificationCode = rand(100000, 999999); // Generate a 6
-
-        $mail = new PHPMailer(true);// set to true to enable debugging
-        try {
-        $mail->isSMTP();
-        $mail->Host = 'smtp.example.com'; // Your SMTP server
-        $mail->SMTPAuth = true;
-        $mail->Username = 'akulorddianson@gmail.com';
-        $mail->Password = 'your_password';
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
-
-        $mail->setFrom('no-reply@example.com', 'Mailer');
-        $mail->addAddress('recipient@example.com', 'Recipient Name');
-
-        $mail->isHTML(true);
-        $mail->Subject = 'Test Email';
-        $mail->Body    = '<b>Hello!</b> This is a test email.';
-        $mail->AltBody = 'Hello! This is a test email.';
-
-        $mail->send();
-        echo 'Message has been sent';
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-    }
 }
 
 ?>
