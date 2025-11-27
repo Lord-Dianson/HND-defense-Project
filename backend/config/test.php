@@ -1,9 +1,11 @@
 <?php
-require '../utils/sendEmail.php'; // Include email sending utility
+function jsonResponse($data, $statusCode = 200) {
+    header('Content-Type: application/json');
+    http_response_code($statusCode);
+    echo json_encode($data);
+}
 
-$result = sendEmailVerification('123456', 'Lord Dianson','akulorddianson@gmail.com');
-echo json_encode($result);
-
+jsonResponse(['message' => 'Test configuration loaded successfully.'], 200);
 /*
 // Adjust the path to the autoload.php file based on your directory structure
 require '../vendor/autoload.php'; 

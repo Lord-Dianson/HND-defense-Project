@@ -31,6 +31,11 @@ class AuthController {
 
         // Verify password
         if (password_verify($credentials['password'], $user->password)) {
+            if( $role === 'agent'){
+                header('location: agent_dashboard.html');}
+            else{
+                header('location: student_dashboard.html');
+            }
             return jsonResponse(['success' => true, 'user' => $user]);
         } else {
             return jsonResponse(['success' => false, 'message' => 'Invalid credentials.'], 401);

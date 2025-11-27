@@ -56,7 +56,7 @@ function sendEmailVerification($OTP, $name, $email){
 
 <div class="email-body">
     <h1 style="margin-top: 3rem;text-align: center;">Welcome to HosteLink!</h1>
-    <p>Thank you for signing up to HosteLink, Mr. someBody. Please verify your email address using your OTP below.</p>
+    <p>Thank you for signing up to HosteLink, Mr/Mrs '.$name.' Please verify your email address using your OTP below.</p>
     <div class="otp-container">
         <span style="display: flex;justify-content: center;align-items: center;">'.$OTP.'</span>
     </div>
