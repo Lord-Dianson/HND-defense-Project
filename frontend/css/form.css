@@ -1,90 +1,315 @@
+ :root {
+            --accent: #00d4ff;
+            --accent-2: #7b61ff;
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --radius: 10px;
+            /* unified radius as requested */
+            --card-max-width: 760px;
+            /* reduced size */
+            --muted: rgba(207, 233, 255, 0.9);
+            --text: #e9eef8;
+        }
 
-    body {
-      background: #f5f5f5;
-      font-family: "Inter", sans-serif;
-      min-height: 100vh;
-    }
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: linear-gradient(135deg, #0b1220 0%, #0f1b2a 45%, #071428 100%);
+            color: var(--text);
+            overflow-x: hidden;
+        }
 
-    .screen-wrapper {
-      max-width: 450px;
-      margin: auto;
-      min-height: 100vh;
-      background: #ffffff;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      position: relative;
-    }
+        .container-center {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .bg-arc {
-      width: 500px;
-      height: 700px;
-      background: linear-gradient(to bottom, #8ae79b, #ffffff);
-      border-radius: 50%;
-      position: absolute;
-      top: -320px;
-      left: -70px;
-      z-index: 1;
-    }
+        /* Animated floating shapes (smaller and slower) */
+        .float-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(36px);
+            opacity: 0.12;
+            transform: translateZ(0);
+            will-change: transform, opacity;
+            animation: floatSlow 6s ease-in-out infinite;
+        }
 
-    .content {
-      position: relative;
-      z-index: 2;
-      padding: 40px 28px;
-      padding-top: 140px;
-    }
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, var(--accent), var(--accent-2));
+            top: -60px;
+            right: -80px;
+            animation-duration: 12s;
+            opacity: 0.14;
+        }
 
-    h2 {
-      font-weight: 700;
-      font-size: 1.8rem;
-      margin-bottom: 12px;
-    }
+        .shape-2 {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(45deg, #ff7ab6, #ffb86b);
+            bottom: -40px;
+            left: -60px;
+            animation-duration: 9s;
+            opacity: 0.08;
+        }
 
-    .form-control {
-      border-radius: 25px;
-      padding: 12px 18px;
-      border: 1px solid #d9d9d9;
-      font-size: 0.95rem;
-    }
+        .shape-3 {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(45deg, #7ef7b6, #00d4ff);
+            top: 20%;
+            left: -40px;
+            animation-duration: 6s;
+            opacity: 0.06;
+        }
 
-    .form-control:focus {
-      border-color: #18a140;
-      box-shadow: 0 0 0 0.1rem rgba(24,161,64,0.25);
-    }
+        @keyframes floatSlow {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
 
-    .signin-link {
-      color: #18a140;
-      text-decoration: none;
-      font-weight: 600;
-    }
+            25% {
+                transform: translateY(-18px) translateX(8px) rotate(3deg);
+            }
 
-    .btn-submit {
-      background: linear-gradient(to right, #18a140, #4dd765);
-      color: #fff;
-      font-weight: 600;
-      border: none;
-      border-radius: 24px;
-      padding: 12px;
-      width: 100%;
-    }
-    .google-btn{
-      font-weight: 600;
-      border-radius: 24px;
-      padding: 12px;
-      width: 100%;
-    }
-    .google-btn:hover{
-      border: none;
-      color: #0e802e;
-    } 
-    .google-btn:active{
-      border:1,5px solid #0e802e;
-      color: #0e802e;
-    }
+            50% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
 
+            75% {
+                transform: translateY(18px) translateX(-8px) rotate(-3deg);
+            }
 
+            100% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+        }
 
-    .btn-submit:hover {
-      background: linear-gradient(to right, #0e802e, #34c152);
-      color: #fff;
-    }
+        /* Card */
+        .signup-card {
+            width: 100%;
+            max-width: var(--card-max-width);
+            border-radius: var(--radius);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.55);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        @media(min-width:992px) {
+            .signup-card {
+                grid-template-columns: 1fr 380px;
+            }
+        }
+
+        .form-side {
+            padding: 1.6rem;
+        }
+
+        .visual-side {
+            background:
+                linear-gradient(180deg, rgba(123, 97, 255, 0.06), rgba(0, 212, 255, 0.03));
+            padding: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .brand {
+            display: flex;
+            gap: .6rem;
+            align-items: center;
+            margin-bottom: 0.45rem;
+        }
+
+        .brand .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #021025;
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(123, 97, 255, 0.14);
+        }
+
+        h1 {
+            font-size: 1.28rem;
+            margin: 0;
+            color: #f6fbff;
+        }
+        
+
+        p.lead {
+            color: var(--muted);
+            opacity: 0.95;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* Inputs: unified 10px radius and focus radius */
+        .form-control,
+        .form-select {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text);
+            border-radius: var(--radius);
+            padding: .65rem .9rem;
+            font-size: 0.95rem;
+            box-shadow: none;
+            transition: box-shadow .18s ease, border-color .18s ease;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            border-radius: var(--radius);
+            color: var(--text);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .input-group-text {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #9fcfff;
+            padding-left: .8rem;
+            padding-right: .8rem;
+        }
+
+        .segmented-toggle {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 999px;
+            padding: 4px;
+            gap: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .segmented-toggle button {
+            border-radius: 999px;
+            padding: .4rem .85rem;
+            border: none;
+            background: transparent;
+            color: #bcdfff;
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+
+        .segmented-toggle button.active {
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            color: #021025;
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.08);
+        }
+
+        .submit-btn {
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            border: none;
+            color: #021025;
+            font-weight: 700;
+            padding: .68rem 1rem;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.08);
+            font-size: 0.96rem;
+        }
+
+        .muted {
+            color: #9fbfe6;
+            font-size: .9rem;
+        }
+
+        footer.small {
+            color: #9fbfe6;
+            font-size: .8rem;
+            margin-top: 1rem;
+        }
+
+        .field-note {
+            font-size: .85rem;
+            color: #9fbfe6;
+            margin-top: .35rem;
+        }
+
+        /* small helpers & compact sizing */
+        .input-group-text .bi {
+            font-size: 1rem;
+        }
+
+        .btn-sm.input-group-text {
+            padding: .35rem .5rem;
+            font-size: 0.95rem;
+        }
+
+        .mb-3 {
+            margin-bottom: .75rem !important;
+        }
+
+        label.form-label {
+            font-size: 0.92rem;
+            margin-bottom: 0.25rem;
+            color: #f4f7fb;
+        }
+
+        /* Responsive tweaks */
+        @media(max-width:575.98px) {
+            .signup-card {
+                max-width: 520px;
+            }
+
+            .brand .logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            h1 {
+                font-size: 1.12rem;
+            }
+
+            .visual-side {
+                display: none !important;
+            }
+
+            .shape-1,
+            .shape-2,
+            .shape-3 {
+                display: none;
+            }
+
+            /* hide shapes on very small screens for clarity */
+        }
+
+        @media(min-width:576px) and (max-width:991.98px) {
+            .signup-card {
+                max-width: 700px;
+            }
+
+            .visual-side {
+                display: none;
+            }
+
+            .shape-3 {
+                display: none;
+            }
+        }

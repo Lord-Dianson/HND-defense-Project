@@ -10,7 +10,7 @@ require '../utils/sendEmail.php'; // Include email sending utility
 class AuthController {
     
     //Public function for log in
-    public function login($role, $credentials) {
+    public function login($role="agent", $credentials=["email"=>"akulorddianson@gmail.com","password"=>"123456"]) {
         // Validate inputs
         if (!validateLoginInput($role,$credentials)) {
             return jsonResponse(['success' => false, 'message' => 'All fields are required.'], 400);

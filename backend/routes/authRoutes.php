@@ -10,13 +10,13 @@ require '../controllers/auth.php';
 $authController = new AuthController();
 
 // Define routes and map them to controller methods
-if ($requestUrl === '/api/login' && $requestMethod === 'POST' && $requestValue === 'login') {
+if ($requestUrl === '/api/login' && $requestMethod === 'POST' ) {
     $credentials = [
         'email' => $_POST['email'],
         'password' => $_POST['password'],
     ];
     $role = $_POST['role'];
-    $authController->login($role, $credentials);    
+    $authController->login($role, $credentials);
 }
 
 ?>

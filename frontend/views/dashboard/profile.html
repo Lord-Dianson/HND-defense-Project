@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HostelSpace Profile</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+     <link rel="stylesheet" href="../../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Desktop sidebar -->
+    <aside class="sidebar" aria-label="Main navigation">
+      <div>
+        <div class="logo" role="img" aria-label="HostelSpace logo">
+          <div class="mark">HS</div>
+          <div>
+            <div class="title">HostelSpace</div>
+            <div class="subtitle">Manage hostels</div>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="Primary">
+          <!-- Profile handled in-page -->
+          <a class="nav-item active" data-target="profile" role="button" tabindex="0">
+            <i class="bi bi-person-fill"></i>
+            <span>Profile</span>
+          </a>
+
+          <!-- Other pages navigate away via href -->
+          <a class="nav-item" href="hostels.html">
+            <i class="bi bi-building"></i>
+            <span>Hostels</span>
+          </a>
+
+          <a class="nav-item" href="support.html">
+            <i class="bi bi-life-preserver"></i>
+            <span>Support</span>
+          </a>
+
+          <a class="nav-item" href="notifications.html">
+            <i class="bi bi-bell-fill"></i>
+            <span>Notifications</span>
+            <span class="badge-notif" style="background:#ff6b6b;color:#fff;font-weight:700;font-size:.72rem;padding:.18rem .45rem;border-radius:999px;margin-left:auto;">3</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" id="logoutDesktop" aria-label="Log out">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Log out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main column -->
+    <main class="main" id="mainContent">
+      <!-- Mobile topbar -->
+      <div class="topbar d-lg-none">
+        <button class="menu-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Open menu">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="page-title">Profile</div>
+      </div>
+
+      <div class="content-shell" id="contentShell" role="region" aria-live="polite">
+        <!-- Profile pane -->
+        <section id="profile" class="pane">
+          <div class="profile-header">
+            <div>
+              <div class="avatar" id="avatarWrap" aria-hidden="false" title="User avatar">
+                <!-- image or initials inserted by JS -->
+                <span id="avatarInitials">AK</span>
+                <img id="avatarImg" src="" alt="User avatar" style="display:none;" />
+              </div>
+
+              <div class="avatar-actions">
+                <label class="btn-avatar" for="avatarInput" role="button">Change</label>
+                <button id="removeAvatar" class="btn-avatar" type="button">Remove</button>
+                <input id="avatarInput" type="file" accept="image/*" style="display:none" />
+              </div>
+            </div>
+
+            <div style="flex:1;">
+              <h2 style="margin:0;" id="displayName">Name</h2>
+              <div class="muted" id="displayAccountType">Student</div>
+              <div style="margin-top:.6rem;">
+                <button id="editProfile" class="btn btn-sm" style="background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none;">Edit profile</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-grid">
+            <div class="detail-card">
+              <strong>Name</strong>
+              <div class="muted" id="profileName">—</div>
+            </div>
+
+            <div class="detail-card">
+              <strong>Email</strong>
+              <div class="muted" id="profileEmail">—</div>
+            </div>
+
+            <div class="detail-card">
+              <strong>Phone</strong>
+              <div class="muted" id="profilePhone">—</div>
+            </div>
+
+            <div class="detail-card">
+              <strong>Account type</strong>
+              <div class="muted" id="profileAccountType">—</div>
+            </div>
+
+            <div class="detail-card" style="grid-column:1 / -1;">
+              <strong>About</strong>
+              <div class="muted" id="profileAbout">No additional information provided.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile offcanvas menu -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="mobileMenuLabel">Menu</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+      <aside class="sidebar" aria-label="Mobile navigation">
+        <div>
+          <div class="logo" role="img" aria-label="HostelSpace logo">
+            <div class="mark">HS</div>
+            <div>
+              <div class="title">HostelSpace</div>
+              <div class="subtitle">Manage hostels</div>
+            </div>
+          </div>
+
+          <nav class="nav-list" aria-label="Primary mobile">
+            <!-- Profile handled in-page -->
+            <a class="nav-item active" data-target="profile" role="button" tabindex="0">
+              <i class="bi bi-person-fill"></i>
+              <span>Profile</span>
+            </a>
+
+            <!-- Mobile links navigate away -->
+            <a class="nav-item" href="hostels.html">
+              <i class="bi bi-building"></i>
+              <span>Hostels</span>
+            </a>
+
+            <a class="nav-item" href="support.html">
+              <i class="bi bi-life-preserver"></i>
+              <span>Support</span>
+            </a>
+
+            <a class="nav-item" href="notifications.html">
+              <i class="bi bi-bell-fill"></i>
+              <span>Notifications</span>
+              <span class="badge-notif" style="background:#ff6b6b;color:#fff;font-weight:700;font-size:.72rem;padding:.18rem .45rem;border-radius:999px;margin-left:auto;">3</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="sidebar-footer">
+          <button class="logout-btn" id="logoutMobile" aria-label="Log out">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Log out</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Edit profile modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid var(--glass-border); color:var(--text);">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit profile</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editForm" class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input id="editName" class="form-control" type="text" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input id="editEmail" class="form-control" type="email" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input id="editPhone" class="form-control" type="tel" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Account type</label>
+            <select id="editAccountType" class="form-select">
+              <option value="student">Student</option>
+              <option value="agent">Agent</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">About</label>
+            <textarea id="editAbout" class="form-control" rows="3"></textarea>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn" style="background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none;">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Utility to read from localStorage with fallback
+    function readProfile() {
+      return {
+        name: localStorage.getItem('signup_name') || localStorage.getItem('profile_name') || 'Aku',
+        email: localStorage.getItem('signup_email') || localStorage.getItem('profile_email') || 'you@example.com',
+        phone: localStorage.getItem('signup_phone') || localStorage.getItem('profile_phone') || '+2376XXXXXXX',
+        accountType: localStorage.getItem('signup_accountType') || localStorage.getItem('profile_accountType') || 'student',
+        about: localStorage.getItem('profile_about') || 'Hostel manager and superhost.',
+        avatarData: localStorage.getItem('profile_avatar') || '' // base64 data URL
+      };
+    }
+
+    // Render profile into DOM
+    function renderProfile() {
+      const data = readProfile();
+      document.getElementById('profileName').textContent = data.name;
+      document.getElementById('profileEmail').textContent = data.email;
+      document.getElementById('profilePhone').textContent = data.phone;
+      document.getElementById('profileAccountType').textContent = capitalize(data.accountType);
+      document.getElementById('displayName').textContent = data.name;
+      document.getElementById('displayAccountType').textContent = capitalize(data.accountType);
+      document.getElementById('profileAbout').textContent = data.about;
+
+      // Avatar handling
+      const avatarImg = document.getElementById('avatarImg');
+      const avatarInitials = document.getElementById('avatarInitials');
+      const avatarWrap = document.getElementById('avatarWrap');
+
+      if (data.avatarData) {
+        avatarImg.src = data.avatarData;
+        avatarImg.style.display = 'block';
+        avatarInitials.style.display = 'none';
+      } else {
+        avatarImg.style.display = 'none';
+        // initials from name
+        const initials = getInitials(data.name);
+        avatarInitials.textContent = initials;
+        avatarInitials.style.display = 'block';
+      }
+    }
+
+    function capitalize(s) {
+      if (!s) return s;
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function getInitials(name) {
+      if (!name) return 'U';
+      const parts = name.trim().split(/\s+/);
+      if (parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+      return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+    }
+
+    // Avatar upload preview and save
+    const avatarInput = document.getElementById('avatarInput');
+    avatarInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const dataUrl = ev.target.result;
+        // preview
+        const avatarImg = document.getElementById('avatarImg');
+        const avatarInitials = document.getElementById('avatarInitials');
+        avatarImg.src = dataUrl;
+        avatarImg.style.display = 'block';
+        avatarInitials.style.display = 'none';
+        // persist
+        localStorage.setItem('profile_avatar', dataUrl);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Remove avatar
+    document.getElementById('removeAvatar').addEventListener('click', () => {
+      localStorage.removeItem('profile_avatar');
+      renderProfile();
+    });
+
+    // Edit profile modal wiring
+    const editModalEl = document.getElementById('editModal');
+    const editModal = new bootstrap.Modal(editModalEl, { backdrop: 'static' });
+
+    document.getElementById('editProfile').addEventListener('click', () => {
+      const data = readProfile();
+      document.getElementById('editName').value = data.name;
+      document.getElementById('editEmail').value = data.email;
+      document.getElementById('editPhone').value = data.phone;
+      document.getElementById('editAccountType').value = data.accountType;
+      document.getElementById('editAbout').value = data.about;
+      editModal.show();
+    });
+
+    document.getElementById('editForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('editName').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+      const phone = document.getElementById('editPhone').value.trim();
+      const accountType = document.getElementById('editAccountType').value;
+      const about = document.getElementById('editAbout').value.trim();
+
+      // Save to localStorage (also mirror to signup keys if you want)
+      localStorage.setItem('profile_name', name);
+      localStorage.setItem('profile_email', email);
+      localStorage.setItem('profile_phone', phone);
+      localStorage.setItem('profile_accountType', accountType);
+      localStorage.setItem('profile_about', about);
+
+      // Optionally keep signup keys in sync
+      // localStorage.setItem('signup_name', name);
+      // localStorage.setItem('signup_email', email);
+      // localStorage.setItem('signup_phone', phone);
+      // localStorage.setItem('signup_accountType', accountType);
+
+      renderProfile();
+      editModal.hide();
+    });
+
+    // Sidebar nav behavior for in-page Profile only
+    function initProfileNav(root = document) {
+      const profileNavs = Array.from(root.querySelectorAll('.nav-item[data-target="profile"]'));
+      profileNavs.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          // remove active from all nav items
+          document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+          // set active on both copies
+          document.querySelectorAll('.nav-item[data-target="profile"]').forEach(n => n.classList.add('active'));
+
+          // show profile pane (already visible on this page)
+          const offcanvasEl = document.getElementById('mobileMenu');
+          const bsOff = bootstrap.Offcanvas.getInstance(offcanvasEl);
+          if (bsOff) bsOff.hide();
+        });
+
+        item.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            item.click();
+          }
+        });
+      });
+    }
+    initProfileNav(document);
+
+    // Logout handlers
+    document.getElementById('logoutDesktop').addEventListener('click', () => {
+      if (confirm('Log out now?')) {
+        // clear session-like keys (example)
+        // localStorage.clear(); // optional
+        window.location.href = '/login.html';
+      }
+    });
+    document.getElementById('logoutMobile').addEventListener('click', () => {
+      if (confirm('Log out now?')) {
+        window.location.href = '/login.html';
+      }
+    });
+
+    // Mobile offcanvas nav should close when clicking links that navigate away
+    document.querySelectorAll('.offcanvas .nav-item[href]').forEach(a => {
+      a.addEventListener('click', () => {
+        const offcanvasEl = document.getElementById('mobileMenu');
+        const bsOff = bootstrap.Offcanvas.getInstance(offcanvasEl);
+        if (bsOff) bsOff.hide();
+      });
+    });
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProfile();
+    });
+  </script>
+</body>
+</html>
