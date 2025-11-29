@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>HosteLink — Support (LorDeon)</title>
+
+  <!-- Bootstrap CSS + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Theme variables -->
+  <style>
+    :root {
+      --accent: #00d4ff;
+      --accent-2: #7b61ff;
+      --glass-bg: rgba(255,255,255,0.02);
+      --glass-border: rgba(255,255,255,0.06);
+      --radius: 10px;
+      --sidebar-width: 260px;
+      --text: #e9eef8;
+      --muted: rgba(207,233,255,0.9);
+      --bg-start: #0b1220;
+      --bg-mid: #0f1b2a;
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-mid) 60%, #071428 100%);
+      color:var(--text);
+      -webkit-text-size-adjust:100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body, #app-root { height: 100%; min-height: 100%; }
+  </style>
+
+  <!-- Internal responsive styling + vertical-shake fixes -->
+  <style>
+    .dashboard { min-height:100vh; display:flex; gap:1rem; padding:1rem; box-sizing:border-box; }
+    .container-fluid { padding-left:0.5rem; padding-right:0.5rem; }
+
+    .sidebar {
+      width:var(--sidebar-width);
+      min-width:var(--sidebar-width);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      border-radius:var(--radius);
+      padding:1rem;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.45);
+      position:sticky;
+      top:1rem;
+      height:calc(100vh - 2rem);
+    }
+    @media (max-width: 991.98px) { .sidebar { display:none; } }
+
+    .logo { display:flex; gap:.75rem; align-items:center; }
+    .logo .mark { width:44px; height:44px; border-radius:10px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; color:#021025; font-weight:700; box-shadow: 0 6px 18px rgba(123,97,255,0.12); }
+    .logo .title { font-weight:700; font-size:1rem; color:var(--text); }
+    .logo .subtitle { font-size:.78rem; color:var(--muted); margin-top:2px; }
+
+    .nav-list { margin-top:1.25rem; display:flex; flex-direction:column; gap:.25rem; flex:1 1 auto; }
+    .nav-item { display:flex; align-items:center; gap:.75rem; padding:.6rem .6rem; border-radius:8px; color:var(--muted); text-decoration:none; cursor:pointer; transition: background .12s ease, color .12s ease, transform .06s ease; user-select:none; }
+    .nav-item:hover, .nav-item:focus { background: rgba(255,255,255,0.02); color:var(--text); transform: translateY(-1px); outline:none; }
+    .nav-item.active { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; font-weight:700; box-shadow: 0 8px 20px rgba(0,212,255,0.06); }
+
+    .sidebar-footer { margin-top:1rem; }
+    .logout-btn { width:100%; display:flex; align-items:center; gap:.6rem; padding:.6rem; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--muted); cursor:pointer; }
+    .logout-btn:hover { background: rgba(255,255,255,0.02); color:var(--text); }
+
+    .topbar { display:flex; align-items:center; gap:.75rem; padding:1rem; width:100%; }
+    @media(min-width:992px){ .topbar { display:none; } }
+    .menu-btn { background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--text); padding:.45rem .6rem; border-radius:8px; }
+    .page-title { font-weight:700; color:var(--text); font-size:1.05rem; }
+
+    .main { flex:1 1 auto; min-height:100vh; display:flex; flex-direction:column; gap:1rem; }
+    .content-shell {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      border-radius:var(--radius);
+      padding:0;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.35);
+      display:flex;
+      flex-direction:column;
+      height: calc(100vh - 2rem);
+      overflow: hidden;
+    }
+
+    .chat-header { display:flex; align-items:center; gap:1rem; padding:1rem; border-bottom:1px solid var(--glass-border); background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); }
+    .bot-avatar { width:56px; height:56px; border-radius:12px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; color:#021025; font-weight:800; font-size:18px; box-shadow: 0 6px 18px rgba(123,97,255,0.12); flex-shrink:0; }
+    .bot-meta { display:flex; flex-direction:column; gap:2px; }
+    .bot-name { font-weight:800; color:var(--text); }
+    .bot-sub { font-size:.85rem; color:var(--muted); }
+
+    .chat-actions { margin-left:auto; display:flex; gap:.5rem; align-items:center; }
+
+    .chat-body {
+      padding:1rem;
+      overflow-y:auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      scroll-behavior: smooth;
+      display:flex;
+      flex-direction:column;
+      gap:.75rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+      flex: 1 1 auto;
+      min-height: 0;
+      transform: translateZ(0);
+    }
+
+    .msg { max-width:78%; padding:.6rem .75rem; border-radius:12px; font-size:.95rem; line-height:1.25; box-shadow: 0 6px 18px rgba(2,6,23,0.06); word-break:break-word; }
+    .msg.bot { background: rgba(255,255,255,0.04); color:var(--text); align-self:flex-start; border-top-left-radius:6px; }
+    .msg.user { background: linear-gradient(90deg,var(--accent-2),var(--accent)); color:#021025; align-self:flex-end; border-top-right-radius:6px; }
+
+    .msg-meta { display:flex; gap:.5rem; align-items:center; margin-top:.35rem; font-size:.78rem; color:var(--muted); }
+    .msg-time { color:var(--muted); font-size:.78rem; }
+
+    .typing { display:flex; gap:.25rem; align-items:center; padding:.35rem .5rem; background:rgba(255,255,255,0.02); border-radius:999px; color:var(--muted); font-size:.9rem; }
+
+    .chat-input {
+      border-top:1px solid var(--glass-border);
+      padding:.75rem;
+      display:flex;
+      gap:.5rem;
+      align-items:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+      position: sticky;
+      bottom: 0;
+      z-index: 30;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0) + 0.75rem);
+    }
+    .input-wrap { flex:1 1 auto; display:flex; gap:.5rem; align-items:center; background:rgba(255,255,255,0.03); padding:.35rem; border-radius:10px; border:1px solid rgba(255,255,255,0.03); }
+    .input-wrap input[type="text"] { background:transparent; border:0; outline:none; color:var(--text); padding:.45rem .35rem; width:100%; font-size:0.95rem; }
+    .icon-btn { background:transparent; border:0; color:var(--muted); padding:.35rem .45rem; border-radius:8px; cursor:pointer; }
+    .icon-btn:hover { color:var(--text); }
+    .send-btn { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none; padding:.5rem .8rem; border-radius:10px; font-weight:700; }
+
+    body.keyboard-open .chat-body { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0)); }
+    body.keyboard-open .content-shell { height: calc(100vh - 2rem); }
+
+    @media (max-width: 991.98px) {
+      .chat-header .bot-avatar { width:48px; height:48px; }
+      .msg { max-width:86%; }
+      .sidebar { display:none; }
+      .content-shell { height: calc(100vh - 3rem); }
+    }
+    @media (max-width: 575.98px) {
+      .bot-meta .bot-name { font-size:1rem; }
+      .chat-actions { display:none; }
+      .chat-body { padding:.75rem; gap:.6rem; }
+      .chat-input { padding:.6rem; position: sticky; bottom: 0; z-index: 30; }
+      .msg { font-size:.95rem; }
+    }
+
+    .muted { color:var(--muted); }
+    .small { font-size:.85rem; }
+  </style>
+</head>
+<body>
+  <div id="app-root" class="dashboard container-fluid">
+    <div class="row g-3 w-100">
+      <div class="col-lg-auto d-none d-lg-block">
+        <aside class="sidebar" aria-label="Main navigation">
+          <div>
+            <div class="logo">
+              <div class="mark">HL</div>
+              <div>
+                <div class="title">HosteLink</div>
+                <div class="subtitle">Support</div>
+              </div>
+            </div>
+
+            <nav class="nav-list" aria-label="Primary">
+              <a class="nav-item" href="./profile.html"><i class="bi bi-person-fill"></i> Profile</a>
+              <a class="nav-item" href="./hostels.html"><i class="bi bi-building"></i> Hostels</a>
+              <a class="nav-item active" data-target="notifications"><i class="bi bi-chat-dots-fill"></i> Support</a>
+              <a class="nav-item" href="./notifications.html"><i class="bi bi-bell-fill"></i> Notifications</a>
+            </nav>
+          </div>
+
+          <div class="sidebar-footer">
+            <button class="logout-btn"><i class="bi bi-box-arrow-right"></i> Log out</button>
+          </div>
+        </aside>
+      </div>
+
+      <div class="col-12 d-lg-none">
+        <div class="topbar">
+          <button class="menu-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+            <i class="bi bi-list"></i>
+          </button>
+          <div class="page-title">Support — LorDeon</div>
+        </div>
+      </div>
+
+      <div class="col-lg">
+        <main class="main">
+          <div class="content-shell" role="main" aria-live="polite">
+            <header class="chat-header" role="banner">
+              <div class="bot-avatar" aria-hidden="true">L</div>
+              <div class="bot-meta">
+                <div class="bot-name">LorDeon</div>
+                <div class="bot-sub">AI support assistant — ask about bookings, payments, or account help</div>
+              </div>
+
+              <div class="chat-actions">
+                <button class="icon-btn" id="clearChatBtn" title="Clear conversation"><i class="bi bi-trash"></i></button>
+                <button class="icon-btn" id="exportBtn" title="Export conversation"><i class="bi bi-download"></i></button>
+              </div>
+            </header>
+
+            <section id="chatBody" class="chat-body" role="log" aria-live="polite" aria-relevant="additions"></section>
+
+            <div id="typingIndicator" class="typing muted" style="display:none; margin:0 1rem;">
+              <div class="spinner-grow spinner-grow-sm text-muted" role="status" aria-hidden="true"></div>
+              <div>LorDeon is typing…</div>
+            </div>
+
+            <div class="chat-input" role="form" aria-label="Send message">
+              <div class="input-wrap" role="search">
+                <button class="icon-btn" id="attachBtn" title="Attach file"><i class="bi bi-paperclip"></i></button>
+                <input id="messageInput" type="text" placeholder="Describe your issue or question..." aria-label="Message input" autocomplete="off" />
+                <button class="icon-btn" id="emojiBtn" title="Emoji"><i class="bi bi-emoji-smile"></i></button>
+              </div>
+              <button id="sendBtn" class="send-btn" aria-label="Send message"><i class="bi bi-send"></i></button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header">
+      <div class="logo">
+        <div class="mark">HL</div>
+        <div>
+          <div class="title">HosteLink</div>
+          <div class="subtitle">Support</div>
+        </div>
+      </div>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+      <nav class="nav-list p-3">
+        <a class="nav-item" href="./profile.html"><i class="bi bi-person-fill"></i>Profile</a>
+        <a class="nav-item" href="./hostels.html"><i class="bi bi-building"></i> Hostels</a>
+        <a class="nav-item active" href="#"><i class="bi bi-chat-dots-fill"></i> Support</a>
+        <a class="nav-item" href="./notifications.html"><i class="bi bi-bell-fill"></i> Notifications</a>
+      </nav>
+      <div class="sidebar-footer p-3">
+        <button class="logout-btn w-100"><i class="bi bi-box-arrow-right"></i> Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Chat JS with OpenRouter integration -->
+<!-- Include these two scripts in your page head or before your chat script -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+<script>
+(function () {
+  // --- CONFIG: replace with your key securely ---
+  // IMPORTANT: Do not embed secrets in public client code for production.
+  // Use a server-side proxy or environment variable to keep keys secret.
+  const OPENROUTER_API_KEY = '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'; // <-- replace securely (or proxy server)
+  const OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
+  const MODEL = 'deepseek/deepseek-r1';
+
+  // Elements
+  const chatBody = document.getElementById('chatBody');
+  const messageInput = document.getElementById('messageInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const typingIndicator = document.getElementById('typingIndicator');
+  const clearChatBtn = document.getElementById('clearChatBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const attachBtn = document.getElementById('attachBtn');
+  const emojiBtn = document.getElementById('emojiBtn');
+
+  const STORAGE_KEY = 'hostelink_lordeon_conversation_v1';
+  let conversation = loadConversation();
+
+  // Utility helpers
+  function nowLabel() {
+    const d = new Date();
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // Markdown rendering helper (marked + DOMPurify)
+  function renderMarkdownToSafeHtml(mdText) {
+    // If marked or DOMPurify are not available, fall back to simple escaping
+    if (typeof marked === 'undefined' || typeof DOMPurify === 'undefined') {
+      return escapeHtml(mdText).replace(/\n/g, '<br>');
+    }
+    // Convert markdown to HTML
+    const rawHtml = marked.parse(mdText || '');
+    // Sanitize HTML to prevent XSS
+    return DOMPurify.sanitize(rawHtml, { SAFE_FOR_TEMPLATES: true });
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function (s) {
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[s];
+    });
+  }
+
+  function saveConversation() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(conversation)); } catch (e) {}
+  }
+  function loadConversation() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+  }
+
+  // Append messages (render markdown before inserting)
+  function appendUserMessage(text, timeLabel) {
+    const el = document.createElement('div');
+    el.className = 'msg user';
+    // Render markdown for user message as well (sanitized)
+    const html = renderMarkdownToSafeHtml(text);
+    el.innerHTML = `<div>${html}</div><div class="msg-meta"><span class="msg-time">${timeLabel}</span></div>`;
+    chatBody.appendChild(el);
+    scrollChatToBottom();
+  }
+
+  function appendBotMessage(text, timeLabel) {
+    const el = document.createElement('div');
+    el.className = 'msg bot';
+    // Render markdown for bot reply and sanitize
+    const html = renderMarkdownToSafeHtml(text);
+    el.innerHTML = `<div><strong>LorDeon</strong></div><div style="margin-top:.35rem;">${html}</div><div class="msg-meta"><span class="msg-time">${timeLabel}</span></div>`;
+    chatBody.appendChild(el);
+    scrollChatToBottom();
+  }
+
+  // Scroll helper
+  function scrollChatToBottom() {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        try { chatBody.scrollTop = chatBody.scrollHeight; } catch (e) {}
+      }, 60);
+    });
+  }
+  window.scrollChatToBottom = scrollChatToBottom;
+
+  // Render conversation
+  function renderConversation() {
+    chatBody.innerHTML = '';
+    if (!conversation || conversation.length === 0) {
+      appendBotMessage("Hello! I’m **LorDeon** — your AI support assistant. Tell me about your issue (booking, payment, account, or general help) and I’ll do my best to assist.", 'now');
+      return;
+    }
+    conversation.forEach(m => {
+      if (m.role === 'user') appendUserMessage(m.text, m.time);
+      else appendBotMessage(m.text, m.time);
+    });
+  }
+
+  // Send message flow
+  async function sendMessage() {
+    const text = messageInput.value.trim();
+    if (!text) return;
+    const time = nowLabel();
+    conversation.push({ role: 'user', text, time });
+    saveConversation();
+    appendUserMessage(text, time);
+    messageInput.value = '';
+    setKeyboardOpen(true);
+
+    // Call OpenRouter
+    try {
+      typingIndicator.style.display = 'flex';
+      const botReply = await callOpenRouter(text);
+      const botTime = nowLabel();
+      conversation.push({ role: 'bot', text: botReply, time: botTime });
+      saveConversation();
+      appendBotMessage(botReply, botTime);
+    } catch (err) {
+      const errMsg = typeof err === 'string' ? err : (err && err.message) ? err.message : 'An error occurred while contacting the AI.';
+      const botTime = nowLabel();
+      const fallback = `Sorry, I couldn't get a response: ${errMsg}`;
+      conversation.push({ role: 'bot', text: fallback, time: botTime });
+      saveConversation();
+      appendBotMessage(fallback, botTime);
+    } finally {
+      typingIndicator.style.display = 'none';
+      setKeyboardOpen(false);
+    }
+  }
+
+  // OpenRouter call (client-side example)
+  // NOTE: For production, proxy this request through your server to keep the API key secret.
+  async function callOpenRouter(userText) {
+    // Build messages: include recent conversation for context (limit to last N messages)
+    const contextMessages = buildContextMessages(userText);
+
+    const payload = {
+      model: MODEL,
+      messages: contextMessages
+    };
+
+    // Timeout helper
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+    try {
+      const res = await fetch(OPENROUTER_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeout);
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw `API error ${res.status}${text ? ': ' + text : ''}`;
+      }
+
+      const data = await res.json();
+
+      // Response shape may vary; deepseek typically returns choices[0].message.content
+      const choice = data?.choices?.[0];
+      const content = choice?.message?.content ?? choice?.text ?? null;
+      if (!content) throw 'No content in AI response.';
+      // The model may return markdown; return as-is (we will render markdown on the frontend)
+      return String(content).trim();
+    } catch (err) {
+      if (err.name === 'AbortError') throw 'Request timed out.';
+      throw err;
+    }
+  }
+
+  // Build context messages for the model (keep it concise)
+  function buildContextMessages(userText) {
+    // Keep last 6 messages for context
+    const recent = conversation.slice(-6).map(m => {
+      return { role: m.role === 'user' ? 'user' : 'assistant', content: m.text };
+    });
+    // Append the new user message
+    recent.push({ role: 'user', content: userText });
+    // Prepend a system prompt to guide behavior
+    const systemPrompt = {
+      role: 'system',
+      content: 'You are LorDeon, an AI support assistant for HosteLink. Provide helpful, concise, and polite answers about bookings, payments, account issues, and site usage. Use Markdown formatting for code, lists, links, and emphasis where helpful. If you cannot resolve, advise escalation to human support.'
+    };
+    return [systemPrompt, ...recent];
+  }
+
+  // Keyboard / vertical-shake helpers
+  function setKeyboardOpen(open) {
+    if (open) document.body.classList.add('keyboard-open');
+    else document.body.classList.remove('keyboard-open');
+  }
+
+  messageInput.addEventListener('focus', () => {
+    setKeyboardOpen(true);
+    setTimeout(() => scrollChatToBottom(), 300);
+  });
+  messageInput.addEventListener('blur', () => setTimeout(() => setKeyboardOpen(false), 120));
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (document.activeElement === messageInput) setKeyboardOpen(true);
+      scrollChatToBottom();
+    }, 120);
+  });
+
+  // UI bindings
+  sendBtn.addEventListener('click', sendMessage);
+  messageInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+  clearChatBtn.addEventListener('click', () => {
+    if (!confirm('Clear this conversation?')) return;
+    conversation = [];
+    saveConversation();
+    renderConversation();
+  });
+
+  exportBtn.addEventListener('click', () => {
+    alert('Export not implemented in this demo. Conversation is stored locally in your browser.');
+  });
+
+  attachBtn.addEventListener('click', () => alert('Attach file not enabled in this demo.'));
+  emojiBtn.addEventListener('click', () => {
+    const emoji = prompt('Insert emoji (e.g., 🙂 )');
+    if (emoji) { messageInput.value = (messageInput.value + ' ' + emoji).trim(); messageInput.focus(); }
+  });
+
+  // Initial render
+  document.addEventListener('DOMContentLoaded', () => {
+    renderConversation();
+    setTimeout(() => {
+      if (window.innerWidth >= 768) messageInput.focus();
+      scrollChatToBottom();
+    }, 120);
+  });
+
+  // Expose for debugging (optional)
+  window._lorDeon = { conversation, saveConversation, loadConversation, scrollChatToBottom };
+
+})();
+</script>
+</body>
+</html>

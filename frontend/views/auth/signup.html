@@ -9,6 +9,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="../../css/form.css">
 </head>
 
@@ -105,9 +107,9 @@
             <div class="visual-side d-none d-lg-flex" aria-hidden="true">
                 <div style="max-width:400px;">
                     <div class="brand">
-                        <div class="logo">HS</div>
+                        <div ><img class="logo" src="../../images/logo.png" alt=""></div>
                         <div>
-                            <div class="text-start" style="font-weight:700; color:#fff;">HostelLink</div>
+                            <div class="text-start" style="font-weight:700; color:#fff;">Hostel<span style="color: #03b5d8;">Link</span></div>
                             <div class="muted">Find hostels - Connect.</div>
                         </div>
                     </div>
@@ -141,70 +143,8 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        // Segmented toggle logic
-        const segStudent = document.getElementById('segStudent');
-        const segAgent = document.getElementById('segAgent');
-        const accountNote = document.getElementById('accountNote');
-        let accountType = 'student';
-
-        function setActiveSegment(selectedBtn) {
-            [segStudent, segAgent].forEach(btn => btn.classList.remove('active'));
-            selectedBtn.classList.add('active');
-            accountType = selectedBtn.dataset.value;
-            accountNote.textContent = accountType === 'student' ? 'Signing up as a student' : 'Signing up as an agent';
-        }
-
-        segStudent.addEventListener('click', () => setActiveSegment(segStudent));
-        segAgent.addEventListener('click', () => setActiveSegment(segAgent));
-
-        // Password toggle
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
-        togglePassword.addEventListener('click', () => {
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            togglePassword.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-        });
-
-        // Simple client-side validation and submit handler
-        const form = document.getElementById('signupForm');
-
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (!form.checkValidity()) {
-                form.classList.add('was-validated');
-                const firstInvalid = form.querySelector(':invalid');
-                if (firstInvalid) firstInvalid.focus();
-                return;
-            }
-
-            const payload = {
-                name: document.getElementById('name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                password: document.getElementById('password').value,
-                phone: document.getElementById('phone').value.trim(),
-                accountType: accountType
-            };
-
-            console.log('Signup payload', payload);
-
-            const btn = form.querySelector('button[type="submit"]');
-            btn.disabled = true;
-            btn.textContent = 'Creating...';
-
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.textContent = 'Create account';
-                form.reset();
-                form.classList.remove('was-validated');
-                setActiveSegment(segStudent);
-                alert('Account created successfully for ' + payload.email);
-            }, 900);
-        });
-
-        // Initialize default
-        setActiveSegment(segStudent);
+    <script src="../../js/signup.js">
+      
     </script>
 </body>
 

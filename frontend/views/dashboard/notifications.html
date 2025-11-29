@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HosteLink — Notifications</title>
+
+  <!-- Bootstrap + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Your theme CSS (variables you provided) -->
+  <link rel="stylesheet" href="../../css/dashboard.css" />
+
+  <style>
+    /* Internal responsive tweaks and notification-specific styles */
+    :root{
+      --card-bg: rgba(255,255,255,0.02);
+      --card-border: rgba(255,255,255,0.03);
+      --unread-accent: linear-gradient(90deg,var(--accent),var(--accent-2));
+    }
+
+    body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+    /* Layout */
+    .dashboard { min-height:100vh; display:flex; gap:1rem; padding:1rem; }
+    .sidebar.d-lg-flex { display:flex !important; } /* ensure desktop sidebar visible */
+
+    /* Mobile topbar */
+    .topbar { display:flex; align-items:center; gap:.75rem; padding:.75rem 1rem; width:100%; }
+    @media(min-width:992px){ .topbar { display:none; } }
+    .menu-btn { background:transparent; border:1px solid var(--glass-border); color:var(--text); padding:.45rem .6rem; border-radius:8px; }
+
+    /* Offcanvas mobile menu */
+    .offcanvas-hostel { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-right:1px solid var(--glass-border); }
+    .offcanvas-hostel .nav-list { margin-top:1rem; display:flex; flex-direction:column; gap:.25rem; }
+
+    /* Content shell */
+    .content-shell { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid var(--glass-border); border-radius:var(--radius); padding:1rem; box-shadow:0 10px 30px rgba(2,6,23,0.35); min-height:calc(100vh - 4rem); }
+
+    /* Controls row */
+    .controls { display:flex; gap:.6rem; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:1rem; }
+    .controls-left { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+    .controls-right { display:flex; gap:.6rem; align-items:center; }
+
+    /* Notifications grid */
+    .notif-grid { display:grid; grid-template-columns:1fr; gap:0.9rem; }
+    @media(min-width:576px){ .notif-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media(min-width:992px){ .notif-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* Notification card */
+    .notif-card {
+      display:flex; gap:.75rem; align-items:flex-start;
+      background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; padding:.9rem;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .notif-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(2,6,23,0.35); }
+
+    .notif-icon {
+      width:56px; height:56px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+      background: linear-gradient(135deg,var(--accent),var(--accent-2)); color:#021025; font-weight:800;
+      box-shadow: 0 6px 18px rgba(123,97,255,0.12);
+    }
+
+    .notif-body { flex:1 1 auto; min-width:0; }
+    .notif-title { font-weight:700; color:var(--text); margin:0 0 .25rem 0; font-size:0.98rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .notif-excerpt { color:var(--muted); font-size:.92rem; margin:0 0 .5rem 0; display:block; max-height:3.6em; overflow:hidden; }
+    .notif-meta { display:flex; gap:.6rem; align-items:center; justify-content:space-between; color:var(--muted); font-size:.85rem; }
+
+    .notif-actions { display:flex; gap:.45rem; align-items:center; margin-left: .5rem; }
+    .btn-icon { background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--muted); padding:.35rem .45rem; border-radius:8px; }
+    .btn-icon:hover { color:var(--text); border-color: rgba(255,255,255,0.06); }
+
+    .unread-dot { width:10px; height:10px; border-radius:999px; background:var(--accent); display:inline-block; margin-right:.45rem; box-shadow:0 4px 10px rgba(0,212,255,0.08); }
+
+    /* Unread card accent */
+    .notif-card.unread { border-left:4px solid transparent; box-shadow: 0 14px 40px rgba(0,212,255,0.03); }
+    .notif-card.unread .notif-title::before { content:''; display:inline-block; width:8px; height:8px; background:var(--accent); border-radius:999px; margin-right:.5rem; vertical-align:middle; }
+
+    /* Empty state */
+    .empty-state { text-align:center; padding:3rem 1rem; color:var(--muted); }
+
+    /* Load more */
+    .load-more-wrap { display:flex; justify-content:center; margin-top:1rem; }
+    .btn-load-more { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none; padding:.6rem 1rem; border-radius:8px; font-weight:700; }
+
+    /* Modal */
+    .modal-content { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid var(--glass-border); color:var(--text); }
+    .modal-header { background:#00000088; }
+    .facility-badge { background: rgba(255,255,255,0.04); color:var(--muted); padding:.25rem .6rem; border-radius:999px; font-size:.85rem; }
+
+    /* Small tweaks */
+    @media(max-width:420px){
+      .notif-card { padding:.7rem; gap:.5rem; }
+      .notif-icon { width:48px; height:48px; font-size:14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard container-fluid">
+    <div class="row g-3">
+      <!-- Desktop sidebar -->
+      <div class="col-lg-auto d-none d-lg-block">
+        <aside class="sidebar d-lg-flex" aria-label="Main navigation">
+          <div>
+            <div class="logo">
+              <div class="mark">HL</div>
+              <div>
+                <div class="title">HosteLink</div>
+                <div class="subtitle">Dashboard</div>
+              </div>
+            </div>
+            <nav class="nav-list">
+              <a class="nav-item" href="./profile.html"><i class="bi bi-person-fill"></i> Profile</a>
+              <a class="nav-item" href="./hostels.html"><i class="bi bi-building"></i> Hostels</a>
+               <a class="nav-item" href="./support.html"><i class="bi bi-chat-dots-fill"></i> Support</a>
+              <a class="nav-item active" data-target="notifications"><i class="bi bi-bell-fill"></i> Notifications</a>
+            </nav>
+          </div>
+          <div class="sidebar-footer">
+            <button class="logout-btn"><i class="bi bi-box-arrow-right"></i> Log out</button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Mobile topbar -->
+      <div class="col-12 d-lg-none">
+        <div class="topbar">
+          <button class="menu-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+            <i class="bi bi-list"></i>
+          </button>
+          <div class="page-title">Notifications</div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="col-lg">
+        <main class="main w-100">
+          <div class="content-shell">
+            <!-- Header -->
+            <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+              <div>
+                <h3 class="m-0">Notifications</h3>
+                <div class="muted">Recent activity and updates</div>
+              </div>
+              <div class="d-flex gap-2 align-items-center">
+                <div class="muted">Showing <span id="visibleCount">0</span> of <span id="totalCount">0</span></div>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+              <div class="controls-left">
+                <input id="searchInput" class="form-control" placeholder="Search notifications (location, title)" style="min-width:220px; max-width:420px;" />
+                <select id="filterSelect" class="form-select" style="min-width:140px;">
+                  <option value="all">All</option>
+                  <option value="unread">Unread</option>
+                </select>
+                <select id="sortSelect" class="form-select" style="min-width:160px;">
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+              </div>
+
+              <div class="controls-right">
+                <button id="markAllReadBtn" class="btn btn-outline-light btn-sm">Mark all read</button>
+                <button id="clearReadBtn" class="btn btn-outline-light btn-sm">Clear read</button>
+              </div>
+            </div>
+
+            <!-- Notifications grid -->
+            <section id="notifGrid" class="notif-grid" aria-live="polite"></section>
+
+            <!-- Empty state -->
+            <div id="emptyState" class="empty-state d-none">
+              <div style="font-size:1.1rem; font-weight:700; color:var(--muted);">No notifications</div>
+              <div class="muted" style="margin-top:.5rem;">You're all caught up — check back later for updates.</div>
+            </div>
+
+            <!-- Load more -->
+            <div class="load-more-wrap">
+              <button id="loadMoreBtn" class="btn-load-more">Load more</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offcanvas mobile menu -->
+  <div class="offcanvas offcanvas-start offcanvas-hostel" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header">
+      <div class="logo">
+        <div class="mark">HL</div>
+        <div>
+          <div class="title">HosteLink</div>
+          <div class="subtitle">Dashboard</div>
+        </div>
+      </div>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+      <nav class="nav-list p-3">
+        <a class="nav-item" href="./profile.html"><i class="bi bi-person-fill"></i> Profile</a>
+        <a class="nav-item" href="./hostels.html"><i class="bi bi-building"></i> Hostels</a>
+          <a class="nav-item" href="./support.html"><i class="bi-chat-dots-fill"></i> Support</a>
+        <a class="nav-item active" data-target="notifications"><i class="bi bi-bell-fill"></i> Notifications</a>
+      </nav>
+      <div class="sidebar-footer p-3">
+        <button class="logout-btn w-100"><i class="bi bi-box-arrow-right"></i> Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification detail modal -->
+  <div class="modal fade" id="notifModal" tabindex="-1" aria-labelledby="notifModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="notifModalLabel">Notification</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="modalTitle" style="font-weight:700; font-size:1.05rem;"></div>
+          <div class="muted" id="modalTime" style="margin-bottom:.6rem;"></div>
+          <div id="modalBodyText" class="mb-3"></div>
+          <div><strong>Related:</strong> <span id="modalRelated" class="muted"></span></div>
+        </div>
+        <div class="modal-footer">
+          <button id="modalMarkBtn" class="btn btn-outline-light">Mark read</button>
+          <button class="btn btn-sm" data-bs-dismiss="modal" style="background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none;">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Sample notifications (id, title, excerpt, body, time, unread, related)
+    const notificationsData = [
+      { id:'n1', title:'New booking request', excerpt:'A student requested a booking for Sunrise Hostel.', body:'A student named John Doe requested a booking for Sunrise Hostel on 2025-12-01. Please review and confirm availability.', time:'2m ago', unread:true, related:'Sunrise Hostel' },
+      { id:'n2', title:'Agent payout processed', excerpt:'Your agent payout for November has been processed.', body:'Your payout of ₦12,500 for November has been processed and will reflect in your account within 2 business days.', time:'1h ago', unread:false, related:'Payments' },
+      { id:'n3', title:'New hostel added', excerpt:'Green Garden has been added to your listings.', body:'Green Garden is now live with 6 rooms available. Review the listing and update photos if needed.', time:'3h ago', unread:true, related:'Green Garden' },
+      { id:'n4', title:'Price alert', excerpt:'City Central price updated to ₦7,200.', body:'City Central price was updated by the owner. New price: ₦7,200 / night. Check availability and notify interested students.', time:'Yesterday', unread:false, related:'City Central' },
+      { id:'n5', title:'Support reply', excerpt:'Support replied to your ticket #452.', body:'Support has responded to your ticket regarding verification. Please check the message and follow the instructions.', time:'2 days ago', unread:true, related:'Support' },
+      { id:'n6', title:'Weekly summary', excerpt:'Your weekly activity summary is ready.', body:'You had 12 new views, 3 booking requests, and 1 confirmed booking this week. Keep up the good work!', time:'3 days ago', unread:false, related:'Summary' },
+      { id:'n7', title:'Maintenance notice', excerpt:'Scheduled maintenance on 2025-12-05.', body:'We will perform scheduled maintenance on 2025-12-05 from 02:00 to 04:00 UTC. Some features may be temporarily unavailable.', time:'4 days ago', unread:false, related:'System' },
+      { id:'n8', title:'New review', excerpt:'A new review was left for Riverside Rooms.', body:'A guest left a 5-star review for Riverside Rooms: "Great stay, friendly staff." Consider replying to thank them.', time:'5 days ago', unread:true, related:'Riverside Rooms' }
+    ];
+
+    // State
+    let allNotifs = notificationsData.slice();
+    let filtered = allNotifs.slice();
+    const perPage = 6;
+    let shown = 0;
+
+    // Elements
+    const notifGrid = document.getElementById('notifGrid');
+    const visibleCountEl = document.getElementById('visibleCount');
+    const totalCountEl = document.getElementById('totalCount');
+    const searchInput = document.getElementById('searchInput');
+    const filterSelect = document.getElementById('filterSelect');
+    const sortSelect = document.getElementById('sortSelect');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const emptyState = document.getElementById('emptyState');
+    const markAllReadBtn = document.getElementById('markAllReadBtn');
+    const clearReadBtn = document.getElementById('clearReadBtn');
+
+    // Modal references
+    const notifModalEl = document.getElementById('notifModal');
+    const notifModal = new bootstrap.Modal(notifModalEl);
+    const modalTitle = document.getElementById('modalTitle');
+    const modalTime = document.getElementById('modalTime');
+    const modalBodyText = document.getElementById('modalBodyText');
+    const modalRelated = document.getElementById('modalRelated');
+    const modalMarkBtn = document.getElementById('modalMarkBtn');
+
+    // Render helpers
+    function renderNotifs(reset = false) {
+      if (reset) { notifGrid.innerHTML = ''; shown = 0; }
+      const slice = filtered.slice(shown, shown + perPage);
+      slice.forEach(n => notifGrid.appendChild(createNotifCard(n)));
+      shown += slice.length;
+      visibleCountEl.textContent = Math.min(shown, filtered.length);
+      totalCountEl.textContent = filtered.length;
+      emptyState.classList.toggle('d-none', filtered.length > 0);
+      loadMoreBtn.style.display = shown >= filtered.length ? 'none' : '';
+    }
+
+    function createNotifCard(n) {
+      const wrap = document.createElement('div');
+      wrap.className = 'notif-card' + (n.unread ? ' unread' : '');
+
+      // Icon
+      const icon = document.createElement('div');
+      icon.className = 'notif-icon';
+      icon.innerHTML = `<i class="bi bi-bell-fill" style="font-size:1.1rem;"></i>`;
+
+      // Body
+      const body = document.createElement('div');
+      body.className = 'notif-body';
+
+      const title = document.createElement('div');
+      title.className = 'notif-title';
+      title.textContent = n.title;
+
+      const excerpt = document.createElement('div');
+      excerpt.className = 'notif-excerpt';
+      excerpt.textContent = n.excerpt;
+
+      const metaRow = document.createElement('div');
+      metaRow.className = 'notif-meta';
+
+      const leftMeta = document.createElement('div');
+      leftMeta.innerHTML = `<span class="${n.unread ? '' : 'muted'}">${n.time}</span>`;
+
+      const rightMeta = document.createElement('div');
+      rightMeta.className = 'd-flex align-items-center';
+
+      // Actions
+      const actions = document.createElement('div');
+      actions.className = 'notif-actions';
+
+      const openBtn = document.createElement('button');
+      openBtn.className = 'btn-icon';
+      openBtn.title = 'Open';
+      openBtn.innerHTML = `<i class="bi bi-eye"></i>`;
+      openBtn.addEventListener('click', () => openNotif(n.id));
+
+      const toggleReadBtn = document.createElement('button');
+      toggleReadBtn.className = 'btn-icon';
+      toggleReadBtn.title = n.unread ? 'Mark read' : 'Mark unread';
+      toggleReadBtn.innerHTML = n.unread ? `<i class="bi bi-envelope-open"></i>` : `<i class="bi bi-envelope"></i>`;
+      toggleReadBtn.addEventListener('click', () => toggleRead(n.id));
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-icon';
+      delBtn.title = 'Delete';
+      delBtn.innerHTML = `<i class="bi bi-trash"></i>`;
+      delBtn.addEventListener('click', () => deleteNotif(n.id));
+
+      actions.append(openBtn, toggleReadBtn, delBtn);
+      rightMeta.appendChild(actions);
+
+      metaRow.append(leftMeta, rightMeta);
+
+      body.append(title, excerpt, metaRow);
+
+      wrap.append(icon, body);
+      return wrap;
+    }
+
+    // Interactions
+    function applyFilters() {
+      const q = searchInput.value.trim().toLowerCase();
+      const filter = filterSelect.value;
+      const sort = sortSelect.value;
+
+      filtered = allNotifs.filter(n => {
+        if (filter === 'unread' && !n.unread) return false;
+        if (q && !(n.title.toLowerCase().includes(q) || n.excerpt.toLowerCase().includes(q) || (n.related && n.related.toLowerCase().includes(q)))) return false;
+        return true;
+      });
+
+      if (sort === 'newest') filtered.sort((a,b) => compareTimeDesc(a,b));
+      else filtered.sort((a,b) => compareTimeAsc(a,b));
+
+      renderNotifs(true);
+    }
+
+    // Simple time comparison helpers (for demo data with relative strings)
+    function parseTime(t){
+      // naive parse for demo: '2m ago', '1h ago', 'Yesterday', '2 days ago'
+      if (!t) return 0;
+      if (t.includes('m')) return Date.now() - parseInt(t) * 60 * 1000;
+      if (t.includes('h')) return Date.now() - parseInt(t) * 60 * 60 * 1000;
+      if (t.toLowerCase().includes('yesterday')) return Date.now() - 24 * 60 * 60 * 1000;
+      if (t.includes('day')) return Date.now() - parseInt(t) * 24 * 60 * 60 * 1000;
+      return Date.now();
+    }
+    function compareTimeDesc(a,b){ return parseTime(b.time) - parseTime(a.time); }
+    function compareTimeAsc(a,b){ return parseTime(a.time) - parseTime(b.time); }
+
+    function openNotif(id) {
+      const n = allNotifs.find(x => x.id === id);
+      if (!n) return;
+      // mark read when opened
+      if (n.unread) { n.unread = false; }
+      // populate modal
+      modalTitle.textContent = n.title;
+      modalTime.textContent = n.time;
+      modalBodyText.textContent = n.body;
+      modalRelated.textContent = n.related || '—';
+      modalMarkBtn.textContent = n.unread ? 'Mark read' : 'Mark unread';
+      modalMarkBtn.onclick = () => { toggleRead(id); notifModal.hide(); };
+      notifModal.show();
+      applyFilters(); // re-render to update unread state
+    }
+
+    function toggleRead(id) {
+      const n = allNotifs.find(x => x.id === id);
+      if (!n) return;
+      n.unread = !n.unread;
+      applyFilters();
+    }
+
+    function deleteNotif(id) {
+      allNotifs = allNotifs.filter(x => x.id !== id);
+      applyFilters();
+    }
+
+    function markAllRead() {
+      allNotifs.forEach(n => n.unread = false);
+      applyFilters();
+    }
+
+    function clearRead() {
+      allNotifs = allNotifs.filter(n => n.unread);
+      applyFilters();
+    }
+
+    // Load more
+    function loadMore() { renderNotifs(false); }
+
+    // Event bindings
+    searchInput.addEventListener('input', () => applyFilters());
+    filterSelect.addEventListener('change', applyFilters);
+    sortSelect.addEventListener('change', applyFilters);
+    loadMoreBtn.addEventListener('click', loadMore);
+    markAllReadBtn.addEventListener('click', () => { markAllRead(); });
+    clearReadBtn.addEventListener('click', () => { clearRead(); });
+
+    // Initial render
+    document.addEventListener('DOMContentLoaded', () => {
+      // default sort newest
+      sortSelect.value = 'newest';
+      applyFilters();
+    });
+
+    // Accessibility: close offcanvas on resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 992) {
+        const offcanvasEl = document.getElementById('mobileMenu');
+        const bs = bootstrap.Offcanvas.getInstance(offcanvasEl);
+        if (bs) bs.hide();
+      }
+    });
+  </script>
+</body>
+</html>

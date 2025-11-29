@@ -1,0 +1,17 @@
+    /* Bootstrap Offcanvas themed like your sidebar (mobile menu) */
+    .offcanvas-hostel {
+       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.579), rgba(12, 12, 12, 0.814));
+      border-right: 1px solid var(--glass-border);
+      padding: 1rem;
+    }
+
+    .offcanvas-hostel .nav-list {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+    }
+
+    .offcanvas-backdrop.show {
+      background-color: rgba(0, 0, 0, 0.4);
+    }
