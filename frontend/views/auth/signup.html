@@ -32,6 +32,9 @@
                         <button type="button" class="active" data-value="student" id="segStudent">Student</button>
                         <button type="button" data-value="agent" id="segAgent">Agent</button>
                     </div>
+                    <div>
+                        <div class="field-note" id="accountNote">Signing up as a student</div>
+                    </div>
                 </div>
                 <form id="signupForm" novalidate>
                     <div class="mb-3">
@@ -78,14 +81,11 @@
                     </div>
 
                     <div class="mb-3 d-flex align-items-center justify-content-between">
-                        <div>
-                            <div class="field-note" id="accountNote">Signing up as a student</div>
-                        </div>
 
                         <div class="text-end">
-                            <div class="muted">Already have an account?</div>
-                            <a href="./login.html" class="text-decoration-none" style="color:var(--accent); font-weight:600;">Sign
-                                in</a>
+                            <div class="muted">Already have an account? <a href="./login.html"
+                                    class="text-decoration-none" style="color:var(--accent); font-weight:400;">Sign
+                                    in</a></div>
                         </div>
                     </div>
 
@@ -103,27 +103,35 @@
 
             <!-- Visual side -->
             <div class="visual-side d-none d-lg-flex" aria-hidden="true">
-                <div style="max-width:300px;">
-                    <div style="font-size:40px; font-weight:800; color:#fff; letter-spacing:-1px;">Welcome</div>
+                <div style="max-width:400px;">
                     <div class="brand">
                         <div class="logo">HS</div>
                         <div>
-                            <div style="font-weight:700; color:#fff;">HostelSpace</div>
-                            <div class="muted">Find rooms. Manage bookings. Connect.</div>
+                            <div class="text-start" style="font-weight:700; color:#fff;">HostelLink</div>
+                            <div class="muted">Find hostels - Connect.</div>
                         </div>
                     </div>
-                    <p class="muted">List rooms, manage bookings, and connect with students or agents. Clean, fast, and
-                        secure.</p>
+                    <div style="font-size:40px; font-weight:800; color:#fff; letter-spacing:-1px;">Welcome</div>
+
+                    <p class="alert alert-info" style="font-size: 15px;"><strong>For Students</strong><br> Find and
+                        book hostels quickly with clear details on price, location and availability. No more endless
+                        searching, everything you need is right here !!</p>
+                    <p class="alert alert-info" style="font-size: 15px;"><strong>For Agent</strong><br> Access verified
+                        hostel information and earn compensations for helping students secure the right place to stay.
+                    </p>
+                    <p class="alert alert-info" style="font-size: 15px;">Sign up today and be part of a growing community that makes hostel booking simple, transparent and rewarding.
+                    Whether you are looking for a safe place to stay or a way to grow your business, HosteLink is here for you !!
+                    </p>
                     <div class="mt-3" style="display:flex; gap:.5rem; justify-content:center;">
-                        <div
+                        <i class="bi bi-person-standing"
                             style="width:60px; height:60px; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; color:#021025; font-weight:700;">
-                            R</div>
-                        <div
+                            </i>
+                        <i class="bi bi-link"
                             style="width:60px; height:60px; border-radius:12px; background:linear-gradient(135deg,#ff7ab6,#ffb86b); display:flex; align-items:center; justify-content:center; color:#021025; font-weight:700;">
-                            B</div>
-                        <div
+                            </i>
+                        <i class="bi bi-house-door-fill"
                             style="width:60px; height:60px; border-radius:12px; background:linear-gradient(135deg,#7ef7b6,#00d4ff); display:flex; align-items:center; justify-content:center; color:#021025; font-weight:700;">
-                            M</div>
+                            </i>
                     </div>
                 </div>
             </div>

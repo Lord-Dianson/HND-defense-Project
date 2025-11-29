@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,195 +16,393 @@
     :root {
       --accent: #00d4ff;
       --accent-2: #7b61ff;
-      --glass-bg: rgba(255,255,255,0.02);
-      --glass-border: rgba(255,255,255,0.06);
+      --glass-bg: rgba(255, 255, 255, 0.02);
+      --glass-border: rgba(255, 255, 255, 0.06);
       --radius: 10px;
       --sidebar-width: 260px;
       --text: #e9eef8;
-      --muted: rgba(207,233,255,0.9);
+      --muted: rgba(207, 233, 255, 0.9);
       --bg-start: #0b1220;
       --bg-mid: #0f1b2a;
       --card-gap: 0.9rem;
     }
 
-    html,body{
-      height:100%;
-      margin:0;
+    html,
+    body {
+      height: 100%;
+      margin: 0;
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-mid) 60%, #071428 100%);
-      color:var(--text);
+      color: var(--text);
     }
 
     /* Page layout */
     .page-wrap {
-      min-height:100vh;
-      display:flex;
-      gap:1rem;
-      padding:1rem;
+      min-height: 100vh;
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
     }
 
     .sidebar {
-      width:var(--sidebar-width);
-      min-width:var(--sidebar-width);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid var(--glass-border);
-      border-radius:var(--radius);
-      padding:1rem;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.45);
-      position:sticky;
-      top:1rem;
-      height:calc(100vh - 2rem);
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
+      position: sticky;
+      top: 1rem;
+      height: calc(100vh - 2rem);
     }
-    @media(max-width:991.98px){ .sidebar { display:none; } }
 
-    .main { flex:1 1 auto; min-height:100vh; }
+    @media(max-width:991.98px) {
+      .sidebar {
+        display: none;
+      }
+    }
+
+    .main {
+      flex: 1 1 auto;
+      min-height: 100vh;
+    }
 
     .content-shell {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid var(--glass-border);
-      border-radius:var(--radius);
-      padding:1rem;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.35);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: 0 10px 30px rgba(2, 6, 23, 0.35);
       min-height: calc(100vh - 4rem);
     }
 
     /* Controls row */
     .controls {
-      display:flex;
-      gap:.6rem;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:0.9rem;
-      flex-wrap:wrap;
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.9rem;
+      flex-wrap: wrap;
     }
-    .controls-left { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
-    .controls-right { display:flex; gap:.6rem; align-items:center; }
+
+    .controls-left {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .controls-right {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+    }
 
     .search-input {
-      min-width:220px;
-      max-width:360px;
+      min-width: 220px;
+      max-width: 360px;
     }
-    .sort-select { min-width:160px; }
+
+    .sort-select {
+      min-width: 160px;
+    }
 
     /* Hostels grid: compact so 6 fit comfortably */
     .hostel-grid {
-      display:grid;
+      display: grid;
       grid-template-columns: repeat(1, 1fr);
       gap: var(--card-gap);
     }
-    @media(min-width:520px){
-      .hostel-grid { grid-template-columns: repeat(2, 1fr); }
+
+    @media(min-width:520px) {
+      .hostel-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
-    @media(min-width:900px){
+
+    @media(min-width:900px) {
+
       /* 3 columns across, smaller cards so two rows of 3 fit (6 visible) */
-      .hostel-grid { grid-template-columns: repeat(3, 1fr); }
+      .hostel-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
-    @media(min-width:1400px){
+
+    @media(min-width:1400px) {
+
       /* on very wide screens show 4 columns */
-      .hostel-grid { grid-template-columns: repeat(4, 1fr); }
+      .hostel-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
 
     /* Card compact styling */
     .hostel-card {
-      border-radius:8px;
-      overflow:hidden;
-      background: rgba(255,255,255,0.02);
-      border:1px solid rgba(255,255,255,0.03);
-      display:flex;
-      flex-direction:column;
-      height:100%;
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
       transition: transform .12s ease, box-shadow .12s ease;
     }
-    .hostel-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(2,6,23,0.45); }
+
+    .hostel-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 40px rgba(2, 6, 23, 0.45);
+    }
 
     /* Make images smaller (compact) so more cards fit */
     .img-wrap {
-      width:100%;
-      aspect-ratio: 4 / 3; /* slightly squarer, smaller height */
-      overflow:hidden;
-      background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02));
-      position:relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      /* slightly squarer, smaller height */
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.02));
+      position: relative;
     }
-    .img-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+
+    .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
     .card-body {
-      padding:0.7rem;
-      display:flex;
-      flex-direction:column;
-      gap:.45rem;
-      flex:1 1 auto;
+      padding: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
+      flex: 1 1 auto;
     }
 
-    .hostel-title { font-weight:700; color:var(--text); font-size:0.98rem; margin-bottom:0; }
-    .hostel-meta { display:flex; gap:.5rem; align-items:center; justify-content:space-between; color:var(--muted); font-size:0.86rem; }
-    .hostel-price { font-weight:800; color:var(--text); font-size:0.95rem; }
+    .hostel-title {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 0.98rem;
+      margin-bottom: 0;
+    }
 
-    .hostel-footer { display:flex; gap:.5rem; align-items:center; justify-content:space-between; margin-top:auto; }
-    .btn-view { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none; padding:.45rem .6rem; border-radius:8px; font-weight:700; font-size:0.86rem; }
-    .btn-book { background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.06); padding:.4rem .55rem; border-radius:8px; font-size:0.86rem; }
+    .hostel-meta {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
 
-    .badge-rooms { background: rgba(255,255,255,0.03); color:var(--muted); padding:.2rem .45rem; border-radius:999px; font-weight:700; font-size:.78rem; }
+    .hostel-price {
+      font-weight: 800;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .hostel-footer {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .btn-view {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #021025;
+      border: none;
+      padding: .45rem .6rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.76rem;
+    }
+
+    .btn-book {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: .4rem .55rem;
+      border-radius: 8px;
+      font-size: 0.76rem;
+    }
+
+    .badge-rooms {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      padding: .2rem .45rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .62rem;
+    }
 
     /* Carousel indicators (dots) and arrows */
     .carousel-indicators [data-bs-target] {
-      width:8px; height:8px; border-radius:999px; background-color: rgba(255,255,255,0.35); border:none; margin:0 .18rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background-color: rgba(255, 255, 255, 0.35);
+      border: none;
+      margin: 0 .18rem;
     }
-    .carousel-indicators .active { background-color: var(--accent); transform: scale(1.05); }
 
-    .carousel-control-prev, .carousel-control-next {
-      width:34px; height:34px; border-radius:999px; background: rgba(0,0,0,0.22); display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.04);
+    .carousel-indicators .active {
+      background-color: var(--accent);
+      transform: scale(1.05);
     }
-    .carousel-control-prev-icon, .carousel-control-next-icon { filter: invert(1) brightness(2); background-size: 12px 12px; }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      filter: invert(1) brightness(2);
+      background-size: 12px 12px;
+    }
 
     /* Modal improvements: clearer layout and readable details */
     .modal-content {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid var(--glass-border);
-      color:var(--text);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border: 1px solid var(--glass-border);
+      color: var(--text);
     }
-    .modal-body { padding:0.8rem; }
-    .modal-details { display:flex; gap:1rem; flex-direction:column; }
-    @media(min-width:900px){ .modal-details { flex-direction:row; } }
 
-    .modal-carousel { flex:1; min-width:320px; }
-    .modal-carousel .carousel-item img { width:100%; height:360px; object-fit:cover; border-radius:6px; }
-    @media(max-width:575.98px){ .modal-carousel .carousel-item img { height:200px; } }
+    .modal-body {
+      padding: 0.8rem;
+      background: #000000a9;
+    }
 
-    .modal-info { flex:1; min-width:260px; display:flex; flex-direction:column; gap:.6rem; }
-    .modal-info h4 { margin:0; color:var(--text); }
-    .modal-info .muted { color:var(--muted); }
-    .modal-desc { max-height:220px; overflow:auto; padding:.5rem; background:rgba(255,255,255,0.01); border-radius:6px; border:1px solid rgba(255,255,255,0.02); }
+    .modal-details {
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+    }
 
-    .modal-actions { display:flex; gap:.6rem; align-items:center; margin-top:auto; }
+    @media(min-width:900px) {
+      .modal-details {
+        flex-direction: row;
+      }
+    }
+
+    .modal-carousel {
+      flex: 1;
+      min-width: 320px;
+    }
+
+    .modal-carousel .carousel-item img {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    @media(max-width:575.98px) {
+      .modal-carousel .carousel-item img {
+        height: 200px;
+      }
+    }
+
+    .modal-info {
+      flex: 1;
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    .modal-info h4 {
+      margin: 0;
+      color: var(--text);
+    }
+
+    .modal-info .muted {
+      color: var(--muted);
+    }
+
+    .modal-desc {
+      max-height: 220px;
+      overflow: auto;
+      padding: .5rem;
+      background: rgba(255, 255, 255, 0.01);
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+      margin-top: auto;
+    }
 
     /* Load more button */
-    .load-more-wrap { display:flex; justify-content:center; margin-top:1rem; }
-    .btn-load-more { background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none; padding:.6rem 1rem; border-radius:8px; font-weight:700; }
+    .load-more-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .btn-load-more {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #021025;
+      border: none;
+      padding: .6rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+    }
 
     /* small helpers */
-    .muted { color:var(--muted); }
-    .small-note { font-size:.86rem; color:var(--muted); }
+    .muted {
+      color: var(--muted);
+    }
+
+    .small-note {
+      font-size: .86rem;
+      color: var(--muted);
+    }
 
     /* compact spacing on small screens */
-    @media(max-width:575.98px){
-      .img-wrap { aspect-ratio: 16 / 9; }
-      .controls { gap:.4rem; }
-      .search-input { min-width:140px; }
+    @media(max-width:575.98px) {
+      .img-wrap {
+        aspect-ratio: 16 / 9;
+      }
+
+      .controls {
+        gap: .4rem;
+      }
+
+      .search-input {
+        min-width: 140px;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="page-wrap">
     <!-- Sidebar (reuse minimal sidebar) -->
     <aside class="sidebar" aria-label="Main navigation">
       <div>
         <div style="display:flex; gap:.75rem; align-items:center;">
-          <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#021025;font-weight:700;">HS</div>
+          <div
+            style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#021025;font-weight:700;">
+            HS</div>
           <div>
             <div style="font-weight:700;color:var(--text);">HostelSpace</div>
             <div style="font-size:.78rem;color:var(--muted);">Manage hostels</div>
@@ -211,15 +410,20 @@
         </div>
 
         <nav style="margin-top:1rem; display:flex; flex-direction:column; gap:.25rem;">
-          <a class="nav-item" href="profile.html"><i class="bi bi-person-fill"></i> <span style="margin-left:.6rem">Profile</span></a>
-          <a class="nav-item active" href="#"><i class="bi bi-building"></i> <span style="margin-left:.6rem">Hostels</span></a>
-          <a class="nav-item" href="support.html"><i class="bi bi-life-preserver"></i> <span style="margin-left:.6rem">Support</span></a>
-          <a class="nav-item" href="notifications.html"><i class="bi bi-bell-fill"></i> <span style="margin-left:.6rem">Notifications</span></a>
+          <a class="nav-item" href="profile.html"><i class="bi bi-person-fill"></i> <span
+              style="margin-left:.6rem">Profile</span></a>
+          <a class="nav-item active" href="#"><i class="bi bi-building"></i> <span
+              style="margin-left:.6rem">Hostels</span></a>
+          <a class="nav-item" href="support.html"><i class="bi bi-life-preserver"></i> <span
+              style="margin-left:.6rem">Support</span></a>
+          <a class="nav-item" href="notifications.html"><i class="bi bi-bell-fill"></i> <span
+              style="margin-left:.6rem">Notifications</span></a>
         </nav>
       </div>
 
       <div>
-        <button class="logout-btn" style="width:100%;display:flex;align-items:center;gap:.6rem;padding:.6rem;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted);">
+        <button class="logout-btn"
+          style="width:100%;display:flex;align-items:center;gap:.6rem;padding:.6rem;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted);">
           <i class="bi bi-box-arrow-right"></i><span>Log out</span>
         </button>
       </div>
@@ -240,7 +444,8 @@
         <!-- Controls: search and sort -->
         <div class="controls">
           <div class="controls-left">
-            <input id="searchInput" class="form-control search-input" placeholder="Search by location (e.g., Buea)" aria-label="Search by location" />
+            <input id="searchInput" class="form-control search-input" placeholder="Search by location (e.g., Buea)"
+              aria-label="Search by location" />
             <select id="sortSelect" class="form-select sort-select">
               <option value="default">Sort by</option>
               <option value="price_high">Price: High → Low</option>
@@ -267,7 +472,7 @@
   <div class="modal fade" id="hostelModal" tabindex="-1" aria-labelledby="hostelModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
+        <div style="background: #000000a9;" class="modal-header">
           <h5 class="modal-title" id="hostelModalLabel">Hostel details</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -280,8 +485,11 @@
               <div class="muted" id="modalHostelLocation">Location</div>
 
               <div style="margin-top:.6rem;">
-                <div><strong>Price</strong> <div id="modalHostelPrice" class="muted" style="display:inline-block; margin-left:.5rem;"></div></div>
-                <div style="margin-top:.4rem;"><strong>Rooms left</strong> <span id="modalHostelRooms" class="muted" style="margin-left:.5rem;"></span></div>
+                <div><strong>Price</strong>
+                  <div id="modalHostelPrice" class="muted" style="display:inline-block; margin-left:.5rem;"></div>
+                </div>
+                <div style="margin-top:.4rem;"><strong>Rooms left</strong> <span id="modalHostelRooms" class="muted"
+                    style="margin-left:.5rem;"></span></div>
               </div>
 
               <div style="margin-top:.8rem;">
@@ -290,7 +498,9 @@
               </div>
 
               <div class="modal-actions">
-                <button id="modalBookBtn" class="btn btn-sm" style="background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none;">Book hostel</button>
+                <button id="modalBookBtn" class="btn btn-sm"
+                  style="background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none;">Book
+                  hostel</button>
                 <button class="btn btn-sm btn-outline-light" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
@@ -306,14 +516,14 @@
   <script>
     /***** Sample data (replace with real data) *****/
     const hostelsData = [
-      { id:'h1', title:'Sunrise Hostel', location:'Buea', price:5000, priceLabel:'₦ 5,000 / night', roomsLeft:3, desc:'Cozy rooms near the university with free Wi-Fi and breakfast.', images:[ 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1400&auto=format&fit=crop' ] },
-      { id:'h2', title:'Campus Lodge', location:'Buea', price:4200, priceLabel:'₦ 4,200 / night', roomsLeft:5, desc:'Affordable rooms with secure parking and 24/7 support.', images:[ 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop' ] },
-      { id:'h3', title:'Riverside Rooms', location:'Limbe', price:6500, priceLabel:'₦ 6,500 / night', roomsLeft:2, desc:'Sea views, modern amenities, and friendly staff.', images:[ 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop' ] },
-      { id:'h4', title:'Green Garden', location:'Buea', price:3800, priceLabel:'₦ 3,800 / night', roomsLeft:6, desc:'Quiet garden setting with shared kitchen and lounge.', images:[ 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop' ] },
-      { id:'h5', title:'City Central', location:'Douala', price:7200, priceLabel:'₦ 7,200 / night', roomsLeft:1, desc:'Central location, great for business travelers.', images:[ 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1400&auto=format&fit=crop' ] },
-      { id:'h6', title:'Seaside Stay', location:'Limbe', price:6100, priceLabel:'₦ 6,100 / night', roomsLeft:4, desc:'Short walk to the beach and local markets.', images:[ 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop' ] },
-      { id:'h7', title:'Hilltop Hostel', location:'Buea', price:4500, priceLabel:'₦ 4,500 / night', roomsLeft:7, desc:'Great views and friendly staff.', images:[ 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop' ] },
-      { id:'h8', title:'Budget Inn', location:'Buea', price:3200, priceLabel:'₦ 3,200 / night', roomsLeft:10, desc:'Simple, clean rooms for budget travelers.', images:[ 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop' ] }
+      { id: 'h1', title: 'Sunrise Hostel', location: 'Buea', price: 5000, priceLabel: '₦ 5,000 / night', roomsLeft: 3, desc: 'Cozy rooms near the university with free Wi-Fi and breakfast.', images: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1400&auto=format&fit=crop'] },
+      { id: 'h2', title: 'Campus Lodge', location: 'Buea', price: 4200, priceLabel: '₦ 4,200 / night', roomsLeft: 5, desc: 'Affordable rooms with secure parking and 24/7 support.', images: ['https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop'] },
+      { id: 'h3', title: 'Riverside Rooms', location: 'Limbe', price: 6500, priceLabel: '₦ 6,500 / night', roomsLeft: 2, desc: 'Sea views, modern amenities, and friendly staff.', images: ['https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop'] },
+      { id: 'h4', title: 'Green Garden', location: 'Buea', price: 3800, priceLabel: '₦ 3,800 / night', roomsLeft: 6, desc: 'Quiet garden setting with shared kitchen and lounge.', images: ['https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop'] },
+      { id: 'h5', title: 'City Central', location: 'Douala', price: 7200, priceLabel: '₦ 7,200 / night', roomsLeft: 1, desc: 'Central location, great for business travelers.', images: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1400&auto=format&fit=crop'] },
+      { id: 'h6', title: 'Seaside Stay', location: 'Limbe', price: 6100, priceLabel: '₦ 6,100 / night', roomsLeft: 4, desc: 'Short walk to the beach and local markets.', images: ['https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop'] },
+      { id: 'h7', title: 'Hilltop Hostel', location: 'Buea', price: 4500, priceLabel: '₦ 4,500 / night', roomsLeft: 7, desc: 'Great views and friendly staff.', images: ['https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop'] },
+      { id: 'h8', title: 'Budget Inn', location: 'Buea', price: 3200, priceLabel: '₦ 3,200 / night', roomsLeft: 10, desc: 'Simple, clean rooms for budget travelers.', images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', 'https://images.unsplash.com/photo-1505691723518-36a0f1b6b1f6?q=80&w=1400&auto=format&fit=crop'] }
     ];
 
     /***** State and rendering *****/
@@ -371,7 +581,7 @@
         btn.setAttribute('data-bs-target', `#${carouselId}`);
         btn.setAttribute('data-bs-slide-to', String(idx));
         if (idx === 0) btn.className = 'active';
-        btn.setAttribute('aria-label', `Slide ${idx+1}`);
+        btn.setAttribute('aria-label', `Slide ${idx + 1}`);
         indicators.appendChild(btn);
       });
 
@@ -385,7 +595,7 @@
         wrap.className = 'img-wrap';
         const image = document.createElement('img');
         image.src = img;
-        image.alt = `${h.title} image ${idx+1}`;
+        image.alt = `${h.title} image ${idx + 1}`;
         wrap.appendChild(image);
         item.appendChild(wrap);
         inner.appendChild(item);
@@ -476,9 +686,9 @@
       });
 
       if (sort === 'price_high') {
-        filteredHostels.sort((a,b) => b.price - a.price);
+        filteredHostels.sort((a, b) => b.price - a.price);
       } else if (sort === 'price_low') {
-        filteredHostels.sort((a,b) => a.price - b.price);
+        filteredHostels.sort((a, b) => a.price - b.price);
       }
 
       // reset and render first page
@@ -501,7 +711,7 @@
       // scroll to newly loaded content
       setTimeout(() => {
         const lastCard = hostelGrid.lastElementChild;
-        if (lastCard) lastCard.scrollIntoView({ behavior:'smooth', block:'center' });
+        if (lastCard) lastCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 120);
     });
 
@@ -547,7 +757,7 @@
         btn.setAttribute('data-bs-target', `#${modalCarouselId}`);
         btn.setAttribute('data-bs-slide-to', String(idx));
         if (idx === 0) btn.className = 'active';
-        btn.setAttribute('aria-label', `Slide ${idx+1}`);
+        btn.setAttribute('aria-label', `Slide ${idx + 1}`);
         indicators.appendChild(btn);
       });
 
@@ -559,7 +769,7 @@
         item.className = 'carousel-item' + (idx === 0 ? ' active' : '');
         const image = document.createElement('img');
         image.src = img;
-        image.alt = `${h.title} image ${idx+1}`;
+        image.alt = `${h.title} image ${idx + 1}`;
         item.appendChild(image);
         inner.appendChild(item);
       });
@@ -605,4 +815,5 @@
     // Accessibility: close modal on Escape handled by Bootstrap automatically
   </script>
 </body>
+
 </html>
