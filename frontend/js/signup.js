@@ -1,5 +1,6 @@
-  // Segmented toggle logic
-        const segStudent = document.getElementById('segStudent');
+import { writePref } from '../utils/storage.js';
+
+const segStudent = document.getElementById('segStudent');
         const segAgent = document.getElementById('segAgent');
         const accountNote = document.getElementById('accountNote');
         let accountType = 'student';
@@ -23,10 +24,10 @@
             togglePassword.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
         });
 
-        // Simple client-side validation and submit handler
+        // Form validation + submit handler with OTP flow
         const form = document.getElementById('signupForm');
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
             if (!form.checkValidity()) {
                 form.classList.add('was-validated');
@@ -35,28 +36,50 @@
                 return;
             }
 
-            const payload = {
+            const credentials = {
                 name: document.getElementById('name').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 password: document.getElementById('password').value,
-                phone: document.getElementById('phone').value.trim(),
-                accountType: accountType
+                phone: document.getElementById('phone').value.trim()
             };
-
-            console.log('Signup payload', payload);
 
             const btn = form.querySelector('button[type="submit"]');
             btn.disabled = true;
-            btn.textContent = 'Creating...';
+            btn.textContent = 'Sending OTP...';
 
-            setTimeout(() => {
+            try {
+                const response = await fetch('/HosteLink/backend/routes/authRoutes.php/send-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        role: accountType,
+                        credentials: credentials
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Buffer signup data using Capacitor Preferences
+                    await writePref('signup_jti', data.jti);
+                    await writePref('signup_credentials', credentials);
+                    await writePref('signup_accountType', accountType);
+
+                    // Redirect to OTP page
+                    window.location.href = '/HosteLink/frontend/views/auth/otp.html';
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to send OTP'));
+                    btn.disabled = false;
+                    btn.textContent = 'Create account';
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('Error: ' + error.message);
                 btn.disabled = false;
                 btn.textContent = 'Create account';
-                form.reset();
-                form.classList.remove('was-validated');
-                setActiveSegment(segStudent);
-                alert('Account created successfully for ' + payload.email);
-            }, 900);
+            }
         });
 
         // Initialize default

@@ -11,7 +11,8 @@
 
   <!-- Your theme CSS (variables you provided) -->
   <link rel="stylesheet" href="../../css/dashboard.css" />
-
+  <!-- Assign logo for my website -->
+     <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
   <style>
     /* Internal responsive tweaks and notification-specific styles */
     :root{
@@ -447,6 +448,26 @@
         const bs = bootstrap.Offcanvas.getInstance(offcanvasEl);
         if (bs) bs.hide();
       }
+    });
+  </script>
+
+  <!-- Auth Guard -->
+  <script src="../../js/session-manager.js"></script>
+
+  <script src="../../js/auth-guard.js"></script>
+
+  <!-- HosteLink Preferences -->
+  <script src="../../js/hostel-preferences.js"></script>
+
+  <script>
+    // Logout handlers
+    document.querySelectorAll('.logout-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('Log out now?')) {
+          window.hostelSession.clearAuthSession();
+          window.location.href = '/HosteLink/frontend/views/auth/login.html';
+        }
+      });
     });
   </script>
 </body>

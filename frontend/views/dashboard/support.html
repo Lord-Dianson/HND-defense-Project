@@ -8,6 +8,8 @@
   <!-- Bootstrap CSS + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Assign logo for my website -->
+     <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
 
   <!-- Theme variables -->
   <style>
@@ -217,9 +219,10 @@
 
             <section id="chatBody" class="chat-body" role="log" aria-live="polite" aria-relevant="additions"></section>
 
-            <div id="typingIndicator" class="typing muted" style="display:none; margin:0 1rem;">
-              <div class="spinner-grow spinner-grow-sm text-muted" role="status" aria-hidden="true"></div>
-              <div>LorDeon is typing…</div>
+            <div id="typingIndicator" class="typing white" style="width: 6pc; display:none; margin:0 1rem;">
+              <i class="bi bi-robot fs-1"></i>
+              
+              <div class="spinner-grow spinner-grow-sm fs-5 text-white" role="status"></div>
             </div>
 
             <div class="chat-input" role="form" aria-label="Send message">
@@ -263,6 +266,15 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- Session Manager (Capacitor-like preferences) -->
+  <script src="../../js/session-manager.js"></script>
+
+  <!-- Auth Guard -->
+  <script src="../../js/auth-guard.js"></script>
+
+  <!-- HosteLink Preferences (Capacitor-like API) -->
+  <script src="../../js/hostel-preferences.js"></script>
+
   <!-- Chat JS with OpenRouter integration -->
 <!-- Include these two scripts in your page head or before your chat script -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -270,13 +282,6 @@
 
 <script>
 (function () {
-  // --- CONFIG: replace with your key securely ---
-  // IMPORTANT: Do not embed secrets in public client code for production.
-  // Use a server-side proxy or environment variable to keep keys secret.
-  const OPENROUTER_API_KEY = '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'; // <-- replace securely (or proxy server)
-  const OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
-  const MODEL = 'deepseek/deepseek-r1';
-
   // Elements
   const chatBody = document.getElementById('chatBody');
   const messageInput = document.getElementById('messageInput');
@@ -287,8 +292,19 @@
   const attachBtn = document.getElementById('attachBtn');
   const emojiBtn = document.getElementById('emojiBtn');
 
-  const STORAGE_KEY = 'hostelink_lordeon_conversation_v1';
-  let conversation = loadConversation();
+  // Configuration
+  const OPENROUTER_API_KEY = 'sk-or-v1-'; // Replace with your actual key
+  const OPENROUTER_BASE_URL = 'https://openrouter.io/api/v1/chat/completions';
+  const SYNC_INTERVAL = 60000;
+  const SYSTEM_PROMPT = `You are LorDeon, a friendly and helpful AI support assistant for HosteLink. Be helpful and professional.`;
+
+  function getChatStorageKey() {
+    const userInfo = window.hostelAuth.getUserInfo();
+    if (userInfo && userInfo.userId) {
+      return `support_chat_${userInfo.userId}`;
+    }
+    return 'support_chat_messages';
+  }
 
   // Utility helpers
   function nowLabel() {
@@ -298,13 +314,10 @@
 
   // Markdown rendering helper (marked + DOMPurify)
   function renderMarkdownToSafeHtml(mdText) {
-    // If marked or DOMPurify are not available, fall back to simple escaping
     if (typeof marked === 'undefined' || typeof DOMPurify === 'undefined') {
       return escapeHtml(mdText).replace(/\n/g, '<br>');
     }
-    // Convert markdown to HTML
     const rawHtml = marked.parse(mdText || '');
-    // Sanitize HTML to prevent XSS
     return DOMPurify.sanitize(rawHtml, { SAFE_FOR_TEMPLATES: true });
   }
 
@@ -314,21 +327,114 @@
     });
   }
 
-  function saveConversation() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(conversation)); } catch (e) {}
-  }
-  function loadConversation() {
+  // Configuration
+  const OPENROUTER_API_KEY = 'sk-or-v1-'; // Replace with your actual key from .env or config
+  const OPENROUTER_BASE_URL = 'https://openrouter.io/api/v1/chat/completions';
+  const SYNC_INTERVAL = 60000; // 1 minute in milliseconds
+  const SYSTEM_PROMPT = `You are LorDeon, a friendly and helpful AI support assistant for HosteLink, a hostel management and booking platform. 
+You assist users with questions about:
+- Booking rooms
+- Payment and billing
+- Account management
+- Hostel features and how to use them
+- General support
+
+Be concise, helpful, and professional. When you don't know something, admit it and offer to escalate to a human agent.`;
+
+  /**
+   * Load conversation from sessionStorage and optionally from backend for multi-device sync
+   */
+  async function loadConversation() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) { return []; }
+      const storageKey = getChatStorageKey();
+      
+      // Try to load from sessionStorage first
+      let messages = [];
+      const localResult = await window.hostelPreferences.getSession(storageKey);
+      if (localResult.value && localResult.value.length > 0) {
+        messages = localResult.value;
+      } else {
+        // If no local messages, try to load from backend for multi-device sync
+        const userInfo = window.hostelAuth.getUserInfo();
+        if (userInfo && userInfo.userId) {
+          try {
+            const response = await fetch(`/HostelLink/backend/routes/chatRoutes.php/chat/history?userId=${userInfo.userId}`);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success && data.messages && data.messages.length > 0) {
+                // Convert database format to display format
+                messages = data.messages.map(m => ({
+                  sender: m.sender,
+                  message: m.message,
+                  timestamp: new Date(m.createdAt).toISOString()
+                }));
+                // Save to local storage
+                await window.hostelPreferences.setSession(storageKey, messages);
+              }
+            }
+          } catch (e) {
+            console.warn("Could not load chat history from backend:", e);
+          }
+        }
+      }
+      
+      if (messages.length === 0) {
+        // Show initial greeting
+        appendBotMessage(
+          "Hello! I'm **LorDeon** — your AI support assistant. Tell me about your issue (booking, payment, account, or general help) and I'll do my best to assist.",
+          'now'
+        );
+      } else {
+        renderConversation(messages);
+      }
+    } catch (error) {
+      console.error("Could not load chat history", error);
+      appendBotMessage("Hello! I'm **LorDeon** — your AI support assistant. How can I help you today?", 'now');
+    }
   }
 
-  // Append messages (render markdown before inserting)
+  /**
+   * Save conversation to sessionStorage
+   */
+  async function saveConversation(messages) {
+    try {
+      const storageKey = getChatStorageKey();
+      await window.hostelPreferences.setSession(storageKey, messages);
+    } catch (error) {
+      console.error("Could not save chat history", error);
+    }
+  }
+
+  /**
+   * Sync chat to database every 60 seconds
+   */
+  async function syncToDatabase(messages) {
+    try {
+      const userInfo = window.hostelAuth.getUserInfo();
+      const response = await fetch('/HostelLink/backend/routes/chatRoutes.php/chat/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: userInfo?.userId || null, messages: messages })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          console.log('Chat synced to database');
+        }
+      }
+    } catch (error) {
+      console.error('Could not sync chat to database:', error);
+      // Don't fail silently - log but continue
+    }
+  }
+
+  // Append messages
   function appendUserMessage(text, timeLabel) {
     const el = document.createElement('div');
     el.className = 'msg user';
-    // Render markdown for user message as well (sanitized)
     const html = renderMarkdownToSafeHtml(text);
     el.innerHTML = `<div>${html}</div><div class="msg-meta"><span class="msg-time">${timeLabel}</span></div>`;
     chatBody.appendChild(el);
@@ -338,7 +444,6 @@
   function appendBotMessage(text, timeLabel) {
     const el = document.createElement('div');
     el.className = 'msg bot';
-    // Render markdown for bot reply and sanitize
     const html = renderMarkdownToSafeHtml(text);
     el.innerHTML = `<div><strong>LorDeon</strong></div><div style="margin-top:.35rem;">${html}</div><div class="msg-meta"><span class="msg-time">${timeLabel}</span></div>`;
     chatBody.appendChild(el);
@@ -356,133 +461,116 @@
   window.scrollChatToBottom = scrollChatToBottom;
 
   // Render conversation
-  function renderConversation() {
+  function renderConversation(messages) {
     chatBody.innerHTML = '';
-    if (!conversation || conversation.length === 0) {
-      appendBotMessage("Hello! I’m **LorDeon** — your AI support assistant. Tell me about your issue (booking, payment, account, or general help) and I’ll do my best to assist.", 'now');
+    if (!messages || messages.length === 0) {
+      appendBotMessage("Hello! I'm **LorDeon** — your AI support assistant. Tell me about your issue and I'll help.", 'now');
       return;
     }
-    conversation.forEach(m => {
-      if (m.role === 'user') appendUserMessage(m.text, m.time);
-      else appendBotMessage(m.text, m.time);
+    messages.forEach(m => {
+      const time = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      if (m.sender === 'user') {
+        appendUserMessage(m.message, time);
+      } else {
+        appendBotMessage(m.message, time);
+      }
     });
+  }
+
+  /**
+   * Get all messages from sessionStorage
+   */
+  async function getAllMessages() {
+    const storageKey = getChatStorageKey();
+    const result = await window.hostelPreferences.getSession(storageKey);
+    return result.value || [];
+  }
+
+  /**
+   * Call OpenRouter API
+   */
+  async function callOpenRouter(messages) {
+    // Filter out metadata, keep only message content
+    const formattedMessages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...messages.map(m => ({
+        role: m.sender === 'user' ? 'user' : 'assistant',
+        content: m.message
+      }))
+    ];
+
+    const response = await fetch(OPENROUTER_BASE_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+        'HTTP-Referer': 'https://hostellink.local/',
+        'X-Title': 'HosteLink Support',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'openrouter/auto', // or specify: gpt-3.5-turbo, gpt-4, etc.
+        messages: formattedMessages,
+        temperature: 0.7,
+        max_tokens: 500
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`OpenRouter API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      return data.choices[0].message.content;
+    }
+    throw new Error('Unexpected OpenRouter response format');
   }
 
   // Send message flow
   async function sendMessage() {
     const text = messageInput.value.trim();
     if (!text) return;
+    
     const time = nowLabel();
-    conversation.push({ role: 'user', text, time });
-    saveConversation();
     appendUserMessage(text, time);
     messageInput.value = '';
-    setKeyboardOpen(true);
-
-    // Call OpenRouter
-    try {
-      typingIndicator.style.display = 'flex';
-      const botReply = await callOpenRouter(text);
-      const botTime = nowLabel();
-      conversation.push({ role: 'bot', text: botReply, time: botTime });
-      saveConversation();
-      appendBotMessage(botReply, botTime);
-    } catch (err) {
-      const errMsg = typeof err === 'string' ? err : (err && err.message) ? err.message : 'An error occurred while contacting the AI.';
-      const botTime = nowLabel();
-      const fallback = `Sorry, I couldn't get a response: ${errMsg}`;
-      conversation.push({ role: 'bot', text: fallback, time: botTime });
-      saveConversation();
-      appendBotMessage(fallback, botTime);
-    } finally {
-      typingIndicator.style.display = 'none';
-      setKeyboardOpen(false);
-    }
-  }
-
-  // OpenRouter call (client-side example)
-  // NOTE: For production, proxy this request through your server to keep the API key secret.
-  async function callOpenRouter(userText) {
-    // Build messages: include recent conversation for context (limit to last N messages)
-    const contextMessages = buildContextMessages(userText);
-
-    const payload = {
-      model: MODEL,
-      messages: contextMessages
-    };
-
-    // Timeout helper
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+    typingIndicator.style.display = 'flex';
 
     try {
-      const res = await fetch(OPENROUTER_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload),
-        signal: controller.signal
+      // Get all messages so far
+      let allMessages = await getAllMessages();
+      
+      // Add new user message
+      allMessages.push({
+        sender: 'user',
+        message: text,
+        timestamp: new Date().toISOString()
       });
 
-      clearTimeout(timeout);
+      // Call OpenRouter
+      const botReply = await callOpenRouter(allMessages);
 
-      if (!res.ok) {
-        const text = await res.text().catch(() => '');
-        throw `API error ${res.status}${text ? ': ' + text : ''}`;
-      }
+      // Add bot reply
+      allMessages.push({
+        sender: 'bot',
+        message: botReply,
+        timestamp: new Date().toISOString()
+      });
 
-      const data = await res.json();
+      // Save to sessionStorage
+      await saveConversation(allMessages);
 
-      // Response shape may vary; deepseek typically returns choices[0].message.content
-      const choice = data?.choices?.[0];
-      const content = choice?.message?.content ?? choice?.text ?? null;
-      if (!content) throw 'No content in AI response.';
-      // The model may return markdown; return as-is (we will render markdown on the frontend)
-      return String(content).trim();
+      // Display reply
+      appendBotMessage(botReply, nowLabel());
     } catch (err) {
-      if (err.name === 'AbortError') throw 'Request timed out.';
-      throw err;
+      console.error('Error:', err);
+      const errorMsg = `Sorry, I encountered an error: ${err.message}. Please check the API key or try again.`;
+      appendBotMessage(errorMsg, nowLabel());
+    } finally {
+      typingIndicator.style.display = 'none';
     }
   }
 
-  // Build context messages for the model (keep it concise)
-  function buildContextMessages(userText) {
-    // Keep last 6 messages for context
-    const recent = conversation.slice(-6).map(m => {
-      return { role: m.role === 'user' ? 'user' : 'assistant', content: m.text };
-    });
-    // Append the new user message
-    recent.push({ role: 'user', content: userText });
-    // Prepend a system prompt to guide behavior
-    const systemPrompt = {
-      role: 'system',
-      content: 'You are LorDeon, an AI support assistant for HosteLink. Provide helpful, concise, and polite answers about bookings, payments, account issues, and site usage. Use Markdown formatting for code, lists, links, and emphasis where helpful. If you cannot resolve, advise escalation to human support.'
-    };
-    return [systemPrompt, ...recent];
-  }
-
-  // Keyboard / vertical-shake helpers
-  function setKeyboardOpen(open) {
-    if (open) document.body.classList.add('keyboard-open');
-    else document.body.classList.remove('keyboard-open');
-  }
-
-  messageInput.addEventListener('focus', () => {
-    setKeyboardOpen(true);
-    setTimeout(() => scrollChatToBottom(), 300);
-  });
-  messageInput.addEventListener('blur', () => setTimeout(() => setKeyboardOpen(false), 120));
-
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (document.activeElement === messageInput) setKeyboardOpen(true);
-      scrollChatToBottom();
-    }, 120);
-  });
 
   // UI bindings
   sendBtn.addEventListener('click', sendMessage);
@@ -490,15 +578,27 @@
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   });
 
-  clearChatBtn.addEventListener('click', () => {
+  clearChatBtn.addEventListener('click', async () => {
     if (!confirm('Clear this conversation?')) return;
-    conversation = [];
-    saveConversation();
-    renderConversation();
+    chatBody.innerHTML = '';
+    await saveConversation([]);
+    appendBotMessage("Hello! I'm **LorDeon** — your AI support assistant. How can I help?", 'now');
   });
 
-  exportBtn.addEventListener('click', () => {
-    alert('Export not implemented in this demo. Conversation is stored locally in your browser.');
+  exportBtn.addEventListener('click', async () => {
+    try {
+      const messages = await getAllMessages();
+      const csv = messages.map(m => `"${m.sender}","${new Date(m.timestamp).toLocaleString()}","${m.message.replace(/"/g, '""')}"`).join('\n');
+      const blob = new Blob(['sender,timestamp,message\n' + csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'hostellink-chat-export.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('Export failed: ' + error.message);
+    }
   });
 
   attachBtn.addEventListener('click', () => alert('Attach file not enabled in this demo.'));
@@ -507,17 +607,32 @@
     if (emoji) { messageInput.value = (messageInput.value + ' ' + emoji).trim(); messageInput.focus(); }
   });
 
+  // Setup sync timer: sync to database every 60 seconds
+  setInterval(async () => {
+    const messages = await getAllMessages();
+    if (messages.length > 0) {
+      await syncToDatabase(messages);
+    }
+  }, SYNC_INTERVAL);
+
+  // Logout handlers
+  document.querySelectorAll('.logout-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (confirm('Log out now?')) {
+        window.hostelSession.clearAuthSession();
+        window.location.href = '/HosteLink/frontend/views/auth/login.html';
+      }
+    });
+  });
+
   // Initial render
   document.addEventListener('DOMContentLoaded', () => {
-    renderConversation();
+    loadConversation();
     setTimeout(() => {
       if (window.innerWidth >= 768) messageInput.focus();
       scrollChatToBottom();
     }, 120);
   });
-
-  // Expose for debugging (optional)
-  window._lorDeon = { conversation, saveConversation, loadConversation, scrollChatToBottom };
 
 })();
 </script>

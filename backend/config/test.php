@@ -1,28 +1,17 @@
 <?php
-function jsonResponse($data, $statusCode = 200) {
+require_once __DIR__ . '/../bootstrap/eloquent.php';
+
+try {
+    $db = Illuminate\Database\Capsule\Manager::connection();
+    $db->getPdo();
+    echo "Database connection established.";
+} catch (Exception $e) {
+    http_response_code(500);
     header('Content-Type: application/json');
-    http_response_code($statusCode);
-    echo json_encode($data);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Database connection failed: ' . $e->getMessage()
+    ]);
+    exit;
 }
-
-jsonResponse(['message' => 'Test configuration loaded successfully.'], 200);
-/*
-// Adjust the path to the autoload.php file based on your directory structure
-require '../vendor/autoload.php'; 
-$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__)); // This goes one level up
-$dotenv->load();
-
-// set up db variables
-$hostname = $_ENV['DB_HOST'];
-$database = getenv('DB_DATABASE');
-$username = getenv('DB_USERNAME');
-$password = getenv('DB_PASSWORD');
-// Load the .env file located in the project root
-echo "DB_HOST: " . $hostname . "\n";
-echo "DB_DATABASE: " . $database . "\n";
-
-// For debugging purposes, to see loaded environment variables
-*/
-
-
 ?>

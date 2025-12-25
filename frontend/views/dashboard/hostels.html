@@ -13,6 +13,8 @@
   <!-- Your base theme CSS -->
   <link rel="stylesheet" href="../../css/dashboard.css" />
   <link rel="stylesheet" href="../../css/offCanvas.css">
+  <!-- Assign logo for my website -->
+     <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
 
   <style>
     /* Internal additions focused on responsiveness and Bootstrap integration */
@@ -722,6 +724,26 @@
       allHostels = hostelsData.slice();
       filteredHostels = allHostels.slice();
       renderHostels(true);
+    });
+  </script>
+
+  <!-- Auth Guard -->
+  <script src="../../js/session-manager.js"></script>
+
+  <script src="../../js/auth-guard.js"></script>
+
+  <!-- HosteLink Preferences -->
+  <script src="../../js/hostel-preferences.js"></script>
+
+  <script>
+    // Logout handlers
+    document.querySelectorAll('.logout-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('Log out now?')) {
+          window.hostelSession.clearAuthSession();
+          window.location.href = '/HosteLink/frontend/views/auth/login.html';
+        }
+      });
     });
   </script>
 </body>

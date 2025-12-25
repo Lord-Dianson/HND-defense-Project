@@ -13,6 +13,8 @@
     <!-- Custom CSS -->
      <link rel="stylesheet" href="../../css/dashboard.css">
      <link rel="stylesheet" href="../../css/offCanvas.css">
+     <!-- Assign logo for my website -->
+     <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
 </head>
 <body>
   <div class="dashboard">
@@ -90,7 +92,7 @@
             </div>
 
             <div style="flex:1;">
-              <h2 style="margin:0;" id="displayName">Name</h2>
+              <h2 style="margin:0;" id="displayName">John Doe</h2>
               <div class="muted" id="displayAccountType">Student</div>
               <div style="margin-top:.6rem;">
                 <button id="editProfile" class="btn btn-sm" style="background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021025; border:none;">Edit profile</button>
@@ -101,22 +103,22 @@
           <div class="profile-grid">
             <div class="detail-card">
               <strong>Name</strong>
-              <div class="muted" id="profileName">—</div>
+              <div class="muted" id="profileName">John Doe</div>
             </div>
 
             <div class="detail-card">
               <strong>Email</strong>
-              <div class="muted" id="profileEmail">—</div>
+              <div class="muted" id="profileEmail">johndoe@gmil.com</div>
             </div>
 
             <div class="detail-card">
               <strong>Phone</strong>
-              <div class="muted" id="profilePhone">—</div>
+              <div class="muted" id="profilePhone">+ 237 679802456</div>
             </div>
 
             <div class="detail-card">
               <strong>Account type</strong>
-              <div class="muted" id="profileAccountType">—</div>
+              <div class="muted" id="profileAccountType">Student</div>
             </div>
 
             <div class="detail-card" style="grid-column:1 / -1;">
@@ -198,6 +200,16 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- Session Manager (Capacitor-like preferences) -->
+  <script src="../../js/session-manager.js"></script>
+
+  <!-- Auth Guard -->
+  <script src="../../js/auth-guard.js"></script>
+
+  <!-- HosteLink Preferences -->
+  <script src="../../js/hostel-preferences.js"></script>
+
+  <!-- Profile JS -->
   <script src="../../js/profile.js">
      </script>
 </body>

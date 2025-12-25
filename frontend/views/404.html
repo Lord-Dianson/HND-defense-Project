@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not Found</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<style>
+    .container-fluid{
+        background: url('../images/favicon.ico') no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+
+    b {
+        font-size: 10rem;
+        color: #010d1e;
+    }
+    a{
+        color: #010d1e;
+    }
+    @media screen and (min-width:1024px){
+        .eyes{
+            width: 12pc;
+            height: 2pc;
+            margin: 0 auto -2rem;
+            display: flex;
+            justify-content: space-evenly;
+            animation: alternate-reverse 0.5s infinite blink;
+        }
+        .left-eye, .right-eye{
+            width: 20%;
+            border-radius: 50%;
+            background-color: #010d1e;
+        }
+        .eye-brow{
+            height: 2pc;
+            justify-self: center;
+            width: 9rem;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+        .left-eye-brow, .right-eye-brow{
+            border: 2px solid #010d1e;
+            background-color: #010d1e;
+            width: 30%;
+            height: 0.3rem;
+        }
+        .left-eye-brow{
+            transform: rotate(-15deg);
+        }
+        .right-eye-brow{
+            transform: rotate(15deg);
+        }
+        @keyframes blink {
+            0%{
+                height: 0;
+            }
+            100%{
+                height: 2rem;
+            }
+        }
+
+    }
+    p{
+        font-size: 1.5rem;
+    }
+</style>
+
+<body>
+    <div
+        class="container-fluid vh-100 d-grid justify-content-center align-items-center align-content-center text-center">
+        <div class="eye-brow">
+            <div class="left-eye-brow"></div>
+            <div class="right-eye-brow"></div>
+        </div>
+        <div class="eyes">
+            <div class="left-eye"></div>
+            <div class="right-eye"></div>
+        </div>
+        <b>404</b>
+ <p>Oops, page not found!!</p>
+        <a href="../../index.html" class="btn btn-outline-light" style="border: 1px solid #010d1e; color: #010d1e;">Go to home page <i class="bi bi-arrow-right"></i></a>
+    </div>
+</body>
+
+</html>
