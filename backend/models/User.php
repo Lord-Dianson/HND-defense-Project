@@ -12,7 +12,7 @@ class User extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'ID', 'name', 'email', 'phone', 'password', 'role', 'status', 'profile', 'createdAt', 'updatedAt'
+        'ID', 'name', 'email', 'phone', 'password', 'role', 'status', 'profile','accountBalance','token', 'createdAt', 'updatedAt'
     ];
 
     protected $hidden = ['password'];

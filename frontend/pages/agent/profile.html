@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Dashboard | HosteLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/agent.css">
+    <style>
+        /* Custom styles for editable inputs */
+        .editable-input {
+            background: transparent;
+            border: 1px solid transparent;
+            color: inherit;
+            width: 100%;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .editable-input:focus,
+        .editable-input.editing {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(251, 191, 36, 0.5);
+            outline: none;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { main: '#0f111a', sec: '#161b28', card: '#1e2538' },
+                        brand: { blue: '#3b82f6', cyan: '#00b4db', gold: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="antialiased bg-dark-main text-white font-sans flex flex-col min-h-screen">
+
+    <canvas id="water-canvas" data-ripple-color="251, 191, 36"></canvas>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-[100] transition-all duration-500 py-4 px-6" id="navbar">
+        <div
+            class="max-w-7xl mx-auto flex items-center justify-between glass-card rounded-full px-6 py-2.5 bg-dark-sec/50">
+            <a href="../index.html" class="flex items-center gap-2">
+                <img src="../../images/logo.png" alt="HosteLink" class="h-10 w-auto">
+                <span class="font-serif text-xl font-bold tracking-tight text-white">Hoste<span
+                        class="text-brand-gold">Link</span></span>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="profile.html" class="nav-link active px-4 py-1.5 text-sm font-bold text-brand-gold">Dashboard
+                    <div class="nav-indicator bg-brand-gold/20"></div>
+                </a>
+                <a href="uploads.html"
+                    class="nav-link px-4 py-1.5 text-sm font-medium text-gray-400 hover:text-white">Uploads<div
+                        class="nav-indicator"></div></a>
+                <a href="history.html"
+                    class="nav-link px-4 py-1.5 text-sm font-medium text-gray-400 hover:text-white">My Listings<div
+                        class="nav-indicator"></div></a>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-4">
+                <div class="flex items-center gap-3 border-r border-white/10 pr-4">
+                    <div class="text-right hidden lg:block">
+                        <p class="text-[10px] text-gray-400">Welcome,</p>
+                        <p class="text-xs font-bold text-white profile-name">Agent Name</p>
+                    </div>
+                    <img src="https://i.pravatar.cc/150?u=agent"
+                        class="w-8 h-8 rounded-full border border-brand-gold profile-img">
+                </div>
+                <a href="../login.html" class="text-gray-400 hover:text-red-400 transition-colors text-xs font-medium">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden">
+                <i class="fas fa-bars text-lg text-white" id="menu-icon"></i>
+                <i class="fas fa-times text-lg text-white hidden" id="close-icon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-dark-main/95 backdrop-blur-xl z-[90] transform translate-x-full transition-transform duration-300 md:hidden flex flex-col justify-center items-center space-y-8">
+        <a href="profile.html"
+            class="text-2xl font-bold text-brand-gold hover:text-white transition-colors">Dashboard</a>
+        <a href="uploads.html" class="text-2xl font-bold text-gray-400 hover:text-white transition-colors">Uploads</a>
+        <a href="history.html" class="text-2xl font-bold text-gray-400 hover:text-white transition-colors">My
+            Listings</a>
+        <div class="h-px w-16 bg-white/10"></div>
+        <a href="../login.html" class="text-red-500 font-bold flex items-center gap-2">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <main class="relative pt-28 pb-16 px-4 flex-1">
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Welcome Header -->
+            <header class="mb-8 animate-fade-in-up flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold font-serif mb-1">Agent <span
+                            class="text-gradient-gold">Dashboard</span>
+                    </h1>
+                    <p class="text-gray-400 text-sm font-light">Overview of your performance and listings.</p>
+                </div>
+                <a href="uploads.html"
+                    class="bg-brand-gold hover:bg-yellow-400 text-dark-main font-bold py-2.5 px-5 rounded-xl transition-all shadow-lg shadow-yellow-500/20 flex items-center gap-2 transform hover:-translate-y-1 text-sm">
+                    <i class="fas fa-plus-circle"></i> New Listing
+                </a>
+            </header>
+
+            <!-- Main Grid Layout: Profile Left, Stats Right -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+
+                <!-- Profile Section (Left Column) -->
+                <div class="lg:col-span-1 animate-fade-in-up delay-100">
+                    <div class="glass-card rounded-3xl p-6 border border-white/5 relative overflow-hidden h-full">
+                        <!-- Settings Icon -->
+                        <div class="absolute top-0 right-0 p-4 z-20">
+                            <button class="text-gray-400 hover:text-white transition-colors"><i
+                                    class="fas fa-cog"></i></button>
+                        </div>
+
+                        <div class="flex flex-col items-center text-center relative z-10">
+                            <!-- Profile Image -->
+                            <div class="relative mb-4 group cursor-pointer">
+                                <img src="../../images/Nkechi.jpeg"
+                                    class="w-24 h-24 rounded-full border-4 border-dark-card shadow-lg z-10 relative object-cover transition-transform group-hover:scale-105 profile-img">
+                                <div
+                                    class="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                    <i class="fas fa-camera text-white"></i>
+                                </div>
+                                <div class="absolute -bottom-1 -right-1 bg-brand-gold p-1.5 rounded-full text-dark-main shadow-lg z-20"
+                                    title="Verified Agent">
+                                    <i class="fas fa-check-circle text-xs"></i>
+                                </div>
+                            </div>
+
+                            <!-- Name & Title -->
+                            <h2 class="text-xl font-bold text-white mb-1" id="display-name">Agent Smith</h2>
+                            <p class="text-brand-gold text-xs font-medium mb-6">Premium Partner</p>
+
+                            <!-- Editable Form -->
+                            <form id="profile-form"
+                                class="w-full space-y-3 text-left bg-white/5 p-5 rounded-2xl border border-white/5">
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Full
+                                        Name</label>
+                                    <input type="text" id="input-name" value="Agent Name"
+                                        class="editable-input font-medium text-sm text-white" readonly>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <label
+                                        class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Agency</label>
+                                    <input type="text" id="input-agency" value="HosteLink Real Estate"
+                                        class="editable-input font-medium text-sm text-white" readonly>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <label
+                                        class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Phone</label>
+                                    <input type="tel" id="input-phone" value="+237 677 000 000"
+                                        class="editable-input font-medium text-sm text-white" readonly>
+                                </div>
+                            </form>
+
+                            <!-- Action Buttons -->
+                            <div class="w-full mt-5" id="action-buttons">
+                                <button onclick="enableEdit()" id="edit-btn"
+                                    class="w-full py-2.5 rounded-xl border border-white/10 hover:border-brand-gold hover:text-brand-gold transition-all text-xs font-bold bg-white/5 hover:bg-white/10">
+                                    Edit Profile
+                                </button>
+
+                                <div id="save-cancel-btns" class="hidden flex gap-3">
+                                    <button onclick="cancelEdit()"
+                                        class="flex-1 py-2.5 rounded-xl border border-white/10 hover:bg-white/10 transition-all text-xs font-bold text-gray-300">
+                                        Cancel
+                                    </button>
+                                    <button onclick="saveProfile()"
+                                        class="flex-1 py-2.5 rounded-xl bg-brand-gold text-dark-main hover:bg-yellow-400 transition-all text-xs font-bold shadow-lg shadow-yellow-500/20">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Section (Right Column, spans 2 columns on large screens) -->
+                <div class="lg:col-span-2 flex flex-col gap-6 animate-fade-in-up delay-200">
+
+                    <!-- Stats Cards Row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="stat-card group p-6 rounded-3xl h-full">
+                            <div class="flex justify-between items-start mb-4">
+                                <div
+                                    class="p-3 bg-brand-gold/10 rounded-xl text-brand-gold group-hover:bg-brand-gold group-hover:text-dark-main transition-colors">
+                                    <i class="fas fa-home text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="text-3xl font-bold text-white mb-1" id="active-listings-count"></div>
+                            <div class="text-sm text-gray-400">Active Listings</div>
+                            <div class="mt-4 w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-brand-gold h-full w-[40%] rounded-full" id="active-listings-progress">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card group p-6 rounded-3xl h-full">
+                            <div class="flex justify-between items-start mb-4">
+                                <div
+                                    class="p-3 bg-green-500/10 rounded-xl text-green-500 group-hover:bg-green-500 group-hover:text-white transition-colors">
+                                    <i class="fas fa-wallet text-xl"></i>
+                                </div>
+                                <span
+                                    class="text-[10px] font-bold text-green-400 bg-green-400/10 px-2.5 py-1 rounded-lg">+15%</span>
+                            </div>
+                            <div class="text-3xl font-bold text-white mb-1 account-balance"><span
+                                    class="text-sm font-normal text-gray-400">FCFA</span></div>
+                            <div class="text-sm text-gray-400">Total Earnings</div>
+                            <div class="mt-4 w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-green-500 h-full w-[45%] rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional "More Info" or Placeholder to fill the space visually nicely -->
+                    <div
+                        class="glass-card rounded-3xl p-6 border border-white/5 flex-1 flex flex-col justify-center items-center text-center">
+                        <div
+                            class="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center text-brand-blue mb-4 animate-pulse">
+                            <i class="fas fa-chart-pie text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Performance Analytics</h3>
+                        <p class="text-sm text-gray-400 max-w-md">Your listings are performing <strong>24%
+                                better</strong> than other agents in Buea this month. Keep up the great work!</p>
+                        <button class="mt-4 text-xs font-bold text-brand-blue hover:text-white transition-colors">View
+                            Detailed Report <i class="fas fa-arrow-right ml-1"></i></button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-main border-t border-white/5 pt-8 pb-6 mt-auto relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <a href="#" class="font-serif text-xl font-bold">HosteLink<span class="text-brand-gold">.</span></a>
+                    <p class="text-gray-500 text-[10px] mt-1">© 2025 HosteLink. Agent Portal.</p>
+                </div>
+                <div class="flex gap-4 text-gray-400 text-xs">
+                    <a href="#" class="hover:text-white transition-colors">Support</a>
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        menuToggle.addEventListener('click', () => {
+            const isOpen = !mobileMenu.classList.contains('translate-x-full');
+
+            if (isOpen) {
+                mobileMenu.classList.add('translate-x-full');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+                document.body.style.overflow = '';
+            } else {
+                mobileMenu.classList.remove('translate-x-full');
+                menuIcon.classList.add('hidden');
+                closeIcon.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+
+    </script>
+    <script src="../../js/ripple.js"></script>
+    <script type="module" src="../../js/agentDashboard.js"></script>
+
+
+</body>
+
+</html>

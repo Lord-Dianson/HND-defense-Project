@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background-color: #0f111a;
+            color: #e5e7eb;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container optimized for single-page fit */
+        .receipt-container {
+            width: 680px;
+            margin: 20pt auto;
+            background-color: #1e2538;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12pt;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .header {
+            padding: 25pt;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .logo-area {
+            font-size: 22pt;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10pt;
+        }
+
+        .receipt-title {
+            font-size: 28pt;
+            font-weight: bold;
+            color: #fbbf24;
+            font-family: "Times New Roman", serif;
+            margin-bottom: 5pt;
+        }
+
+        .date-section {
+            text-align: center;
+            padding: 15pt 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .date-label {
+            font-size: 9pt;
+            text-transform: uppercase;
+            color: #9ca3af;
+            letter-spacing: 1.5pt;
+        }
+
+        .date-value {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #ffffff;
+            margin-top: 3pt;
+        }
+
+        .details-box {
+            margin: 20pt;
+            background-color: #161b28;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10pt;
+            padding: 15pt;
+        }
+
+        .details-title {
+            font-size: 16pt;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10pt;
+            margin-bottom: 12pt;
+            color: #ffffff;
+        }
+
+        .row-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .row-table td {
+            padding: 6pt 0;
+            vertical-align: middle;
+        }
+
+        .label {
+            color: #d1d5db;
+            font-size: 11pt;
+        }
+
+        .value {
+            font-weight: bold;
+            color: #ffffff;
+            text-align: right;
+            font-size: 11pt;
+        }
+
+        .total-section {
+            margin: 0 20pt 20pt 20pt;
+        }
+
+        .border-dashed {
+            border-bottom: 1pt dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 10pt;
+            margin-bottom: 10pt;
+        }
+
+        /* Contact Section Alignment Fix */
+        .contact-section {
+            background-color: #161b28;
+            padding: 15pt 20pt;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-table {
+            width: 100%;
+        }
+
+        .contact-cell {
+            width: 33.33%;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* Nested table for perfect icon alignment */
+        .icon-align-table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        .icon-align-table td {
+            padding: 0 4pt;
+            vertical-align: middle;
+            color: #d1d5db;
+            font-size: 9pt;
+        }
+
+        .icon-svg {
+            width: 14px;
+            height: 14px;
+            fill: #3b82f6;
+        }
+
+        .footer {
+            padding: 15pt 30pt;
+            text-align: center;
+            font-size: 10pt;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+
+        .copyright {
+            text-align: center;
+            font-size: 8pt;
+            color: #4b5563;
+            padding-bottom: 20pt;
+        }
+
+        .text-brand-blue {
+            color: #3b82f6;
+        }
+
+        #download-pdf-btn:active {
+            background-color: blue;
+        }
+
+        #download-pdf-btn {
+            background-color: #fbbf24;
+            color: #0f111a;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="receipt-container">
+        <div class="header">
+            <div class="logo-area">Hoste<span class="text-brand-blue">Link</span></div>
+            <h1 class="receipt-title">Payment Receipt</h1>
+            <p style="color: #9ca3af; font-size: 11pt;">Thank you for your booking!</p>
+        </div>
+
+        <div class="date-section">
+            <div class="date-label">Payment Date</div>
+            <div class="date-value">December 29, 2025</div>
+        </div>
+
+        <div class="details-box">
+            <div class="details-title">Booking Details</div>
+            <table class="row-table">
+                <tr>
+                    <td class="label">Payer Name:</td>
+                    <td class="value" id="payer-name">John Doe</td>
+                </tr>
+                <tr>
+                    <td class="label">Hostel Name:</td>
+                    <td class="value" id="hostel-name">Molyko Heights</td>
+                </tr>
+                <tr>
+                    <td class="label">Room Number:</td>
+                    <td class="value">C-12</td>
+                </tr>
+                <tr>
+                    <td class="label">Booking Period:</td>
+                    <td class="value" id="booking-period">1 Year (2025-2026)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="total-section">
+            <table class="row-table border-dashed">
+                <tr>
+                    <td style="color: #d1d5db; font-size: 12pt;">Rent Amount:</td>
+                    <td class="value" style="font-size: 13pt;" id="rent-amount">280,000 FCFA</td>
+                </tr>
+            </table>
+            <table class="row-table" style="margin-top: 5pt;">
+                <tr>
+                    <td class="text-brand-blue" style="font-size: 18pt; font-weight: bold;">Total Paid:</td>
+                    <td class="text-brand-blue" style="font-size: 20pt; font-weight: bold; text-align: right;"
+                        id="total-paid">280,000 FCFA</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="contact-section">
+            <table class="contact-table">
+                <tr>
+                    <td class="contact-cell">
+                        <table class="icon-align-table">
+                            <tr>
+                                <td><svg class="icon-svg" viewBox="0 0 24 24">
+                                        <path
+                                            d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                                    </svg></td>
+                                <td>hosteLink@gmail.com</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="contact-cell">
+                        <table class="icon-align-table">
+                            <tr>
+                                <td><svg class="icon-svg" viewBox="0 0 24 24">
+                                        <path
+                                            d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                                    </svg></td>
+                                <td>+237 653568807</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="contact-cell">
+                        <table class="icon-align-table">
+                            <tr>
+                                <td><svg class="icon-svg" viewBox="0 0 24 24">
+                                        <path
+                                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                                    </svg></td>
+                                <td>+237 653568807</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="footer">
+            This receipt confirms your payment for the specified booking. Please present this "Golden Receipt" to the
+            landlord upon arrival.
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <button id="download-pdf-btn" type="button">
+            Download PDF
+        </button>
+    </div>
+
+    <div class="copyright">
+        © 2025 HosteLink Cameroon. All rights reserved.
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script type="module">
+        import { getPreference } from '../../js/utils.js';
+
+        // Initialize Receipt Data
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const bookingDataStr = await getPreference('current_booking');
+                if (bookingDataStr) {
+                    const bookingData = JSON.parse(bookingDataStr);
+
+                    // Populate Fields
+                    setText('payer-name', bookingData.payerName);
+                    setText('hostel-name', bookingData.hostelName);
+                    setText('booking-period', `${bookingData.duration} Year${bookingData.duration > 1 ? 's' : ''} (2025-${2025 + bookingData.duration})`);
+
+                    // Format Money
+                    const rent = bookingData.rentTotal || 0;
+                    const total = bookingData.totalPrice || 0; // Rent + 2000
+                    setText('rent-amount', parseInt(rent).toLocaleString() + ' FCFA');
+                    setText('total-paid', parseInt(total).toLocaleString() + ' FCFA');
+
+                    // Date
+                    const dateObj = new Date(bookingData.date);
+                    const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                    const dateEl = document.querySelector('.date-value');
+                    if (dateEl) dateEl.textContent = formattedDate;
+                }
+            } catch (e) {
+                console.error('Error loading receipt data', e);
+            }
+        });
+
+        function setText(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        }
+
+        document.getElementById('download-pdf-btn').addEventListener('click', async function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Get the button element
+            const btn = this;
+            const originalText = btn.textContent;
+
+            // Load Data
+            let data = {};
+            try {
+                const bookingDataStr = await getPreference('current_booking');
+                const booking = bookingDataStr ? JSON.parse(bookingDataStr) : {};
+
+                data = {
+                    payer_name: booking.payerName || "Guest",
+                    hostel_name: booking.hostelName || "Unknown Hostel",
+                    booking_period: booking.duration || 1,
+                    rent_amount: booking.totalPrice || 0 // Sending Total as rent amount for receipt generation for now
+                };
+            } catch (e) {
+                data = {
+                    payer_name: "John Doe",
+                    hostel_name: "Molyko Heights",
+                    booking_period: 1,
+                    rent_amount: 0
+                };
+            }
+
+            // Disable button and show loading state
+            btn.disabled = true;
+            btn.textContent = 'Generating PDF...';
+            btn.style.cursor = 'not-allowed';
+            btn.style.opacity = '0.7';
+
+            // Make API call to backend
+            axios.post('http://localhost:3000/api/receipts/generate', data, {
+                responseType: 'blob'
+            }).then(response => {
+                // Create blob and download
+                const blob = new Blob([response.data], { type: 'application/pdf' });
+                const url = window.URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Receipt-' + data.hostel_name.replace(/\s+/g, '-') + '-' + new Date().getTime() + '.pdf';
+                document.body.appendChild(a);
+                a.click();
+
+                // Cleanup
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+                // Show success feedback
+                btn.textContent = '✓ Downloaded!';
+                btn.style.backgroundColor = '#10b981';
+
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                    btn.style.cursor = 'pointer';
+                    btn.style.opacity = '1';
+                    btn.style.backgroundColor = '#fbbf24';
+                }, 2000);
+            }).catch(err => {
+                console.error('Error downloading PDF:', err);
+
+                // Show error to user
+                let errorMessage = 'Failed to generate receipt';
+                if (err.response && err.response.data) {
+                    // Try to read error from blob
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        try {
+                            const errorData = JSON.parse(this.result);
+                            alert(errorData.message || errorMessage);
+                        } catch (e) {
+                            alert(errorMessage);
+                        }
+                    };
+                    reader.readAsText(err.response.data);
+                } else {
+                    alert(errorMessage);
+                }
+
+                // Reset button
+                btn.disabled = false;
+                btn.textContent = originalText;
+                btn.style.cursor = 'pointer';
+                btn.style.opacity = '1';
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>

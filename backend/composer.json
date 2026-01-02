@@ -7,14 +7,20 @@
         "illuminate/database": "^10.0",
         "ramsey/uuid": "^4.9",
         "slim/slim": "^4.15",
-        "slim/psr7": "^1.8",
-        "firebase/php-jwt": "^7.0"
+       "slim/psr7": "^1.8",
+        "firebase/php-jwt": "^7.0",
+        "mpdf/mpdf": "^8.2"
     },
     "autoload": {
         "psr-4": {
             "Models\\": "models/",
             "Controllers\\": "controllers/",
             "Utils\\": "utils/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "oat-sa/composer-npm-bridge": false
         }
     }
 }

@@ -1,0 +1,116 @@
+/* Admin Theme - Indigo/Violet */
+:root {
+    --color-admin-primary: #8b5cf6;
+    /* Violet-500 */
+    --color-admin-secondary: #6366f1;
+    /* Indigo-500 */
+    --color-admin-dark: #0f111a;
+    --color-admin-card: #1e2538;
+}
+
+.text-gradient-admin {
+    background: linear-gradient(to right, #a78bfa, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+
+.bg-gradient-admin {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: #9ca3af;
+    transition: all 0.3s ease;
+    border-right: 2px solid transparent;
+    font-size: 0.85rem;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+    color: #fff;
+    background: rgba(139, 92, 246, 0.1);
+    border-right-color: #8b5cf6;
+}
+
+.sidebar-link.active i {
+    color: #8b5cf6;
+}
+
+.admin-card {
+    background: rgba(30, 37, 56, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0.75rem;
+    /* Reduced radius */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px -2px rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.2);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    /* Collapsed for professional look */
+    font-size: 0.75rem;
+    /* Small font */
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    /* Tight padding */
+    color: #9ca3af;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-table td {
+    padding: 0.5rem 0.75rem;
+    /* Tight padding */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #e5e7eb;
+}
+
+.admin-table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.status-badge {
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.status-success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.status-warning {
+    background: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.status-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}

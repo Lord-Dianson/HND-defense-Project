@@ -1,0 +1,146 @@
+/* Agent Theme Variables (Gold/Amber Accent) */
+:root {
+    --agent-gold: #fbbf24;
+    --agent-gold-dim: rgba(251, 191, 36, 0.1);
+    --agent-gradient: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+}
+
+/* Text Gradients */
+.text-gradient-gold {
+    background: var(--agent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* Dashboard Stats Cards */
+.stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--agent-gold);
+    box-shadow: 0 10px 30px rgba(251, 191, 36, 0.15);
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, var(--agent-gold-dim), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.stat-card:hover::after {
+    opacity: 1;
+}
+
+/* Upload Drag & Drop Zone */
+.upload-zone {
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+    border-color: var(--agent-gold);
+    background: rgba(251, 191, 36, 0.05);
+}
+
+.upload-zone i {
+    font-size: 3rem;
+    color: var(--agent-gold);
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.upload-zone:hover i {
+    transform: scale(1.1) rotate(10deg);
+}
+
+/* Listing History Item */
+.history-item {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-active {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-pending {
+    background: rgba(234, 179, 8, 0.2);
+    color: #facc15;
+    border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+/* Agent Form Inputs */
+.agent-input {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    color: white;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.agent-input:focus {
+    outline: none;
+    border-color: var(--agent-gold);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+}
+
+/* Custom Checkbox */
+.amenity-checkbox input:checked+div {
+    background: var(--agent-gold);
+    color: #0f111a;
+    border-color: var(--agent-gold);
+}

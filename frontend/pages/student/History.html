@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History | HosteLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { main: '#0f111a', sec: '#161b28', card: '#1e2538' },
+                        brand: { blue: '#3b82f6', cyan: '#00b4db', gold: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="antialiased bg-dark-main text-white font-sans flex flex-col min-h-screen">
+
+    <canvas id="water-canvas"></canvas>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-[100] transition-all duration-500 py-4 px-6" id="navbar">
+        <div class="max-w-7xl mx-auto flex items-center justify-between glass-card rounded-full px-8 py-3">
+            <a href="../index.html" class="flex items-center gap-2">
+                <img src="../../images/logo.png" alt="HosteLink" class="h-10 w-auto">
+                <span class="font-serif text-2xl font-bold tracking-tight text-white">Hoste<span
+                        class="text-brand-blue">Link</span></span>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="hostels.html" class="nav-link px-5 py-2 text-sm font-medium text-gray-400">Hostels<div
+                        class="nav-indicator"></div></a>
+                <a href="profile.html" class="nav-link px-5 py-2 text-sm font-medium text-gray-400">Profile<div
+                        class="nav-indicator"></div></a>
+                <a href="History.html" class="nav-link active px-5 py-2 text-sm font-medium text-white">History<div
+                        class="nav-indicator"></div></a>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="../botChatpage.html"
+                    class="text-gray-400 hover:text-brand-blue transition-colors mr-2 relative group"
+                    title="AI Assistant">
+                    <i class="fas fa-robot text-lg"></i>
+                    <span
+                        class="absolute top-full right-0 mt-2 bg-dark-card border border-white/10 px-2 py-1 rounded text-xs text-brand-blue opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Ask
+                        AI</span>
+                </a>
+                <a href="#"
+                    class="logout-btn flex items-center gap-2 border border-red-500/40 text-red-500 px-5 py-2 rounded-full text-sm font-medium hover:bg-red-500/10 transition-all">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden relative z-[110] w-10 h-10 flex items-center justify-center">
+                <i id="menu-icon" class="fas fa-bars text-xl transition-all"></i>
+                <i id="close-icon" class="fas fa-times text-xl absolute opacity-0 scale-0 transition-all"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu"
+        class="fixed inset-0 z-[90] bg-dark-sec flex flex-col items-center justify-center space-y-8 translate-x-full transition-transform duration-500 md:hidden">
+        <a href="hostels.html" class="mobile-link text-3xl font-bold text-gray-400">Hostels</a>
+        <a href="profile.html" class="mobile-link text-3xl font-bold text-gray-400">Profile</a>
+        <a href="History.html" class="mobile-link text-3xl font-bold text-white">History</a>
+        <a href="../botChatpage.html" class="mobile-link text-3xl font-bold text-brand-blue"><i
+                class="fas fa-robot mr-2"></i> AI Assistant</a>
+        <a href="#"
+            class="logout-btn w-64 border border-red-500/40 text-red-500 py-3 rounded-full font-bold flex items-center justify-center gap-3 mt-8">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <!-- Chat Bot FAB -->
+    <a href="../botChatpage.html"
+        class="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-brand-blue to-blue-600 rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 transition-transform z-50 group hover:shadow-blue-500/40">
+        <i class="fas fa-robot text-2xl group-hover:rotate-12 transition-transform"></i>
+        <div
+            class="absolute right-full mr-4 bg-dark-card border border-white/10 px-4 py-2 rounded-xl text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
+            Ask AI Assistant
+            <div
+                class="absolute top-1/2 -right-1.5 w-3 h-3 bg-dark-card border-t border-r border-white/10 transform rotate-45 -translate-y-1/2">
+            </div>
+        </div>
+        <span
+            class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2 border-dark-main"></span>
+    </a>
+
+    <!-- Main Content -->
+    <main class="relative pt-32 pb-20 px-4 flex-1">
+        <div class="max-w-6xl mx-auto">
+            <header class="mb-12 animate-fade-in-up text-center">
+                <h1 class="text-3xl md:text-5xl font-bold font-serif mb-3">Transaction <span
+                        class="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300">History</span>
+                </h1>
+                <p class="text-gray-400 text-lg font-light">Review your payments and download receipts.</p>
+            </header>
+
+            <div
+                class="glass-panel p-8 rounded-[2rem] animate-fade-in-up delay-100 border border-white/5 shadow-xl relative">
+                <!-- Glow effect -->
+                <div
+                    class="absolute top-1/2 left-1/2 w-96 h-96 bg-brand-blue/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 pointer-events-none">
+                </div>
+
+                <div class="flex border-b border-white/10 mb-8 overflow-x-auto relative z-10">
+                    <button
+                        class="px-8 py-4 text-brand-blue font-bold border-b-2 border-brand-blue whitespace-nowrap bg-brand-blue/5 rounded-t-xl transition-all">Payments</button>
+                </div>
+
+                <!-- Payments Table -->
+                <div class="overflow-x-auto relative z-10">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr
+                                class="border-b border-white/10 text-xs text-gray-400 uppercase tracking-wider font-semibold">
+                                <th class="p-6">Hostel</th>
+                                <th class="p-6">Date</th>
+                                <th class="p-6">Amount</th>
+                                <th class="p-6">Status</th>
+                                <th class="p-6 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            <tr class="hover:bg-white/5 transition-colors group">
+                                <td class="p-6">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-12 h-12 rounded-2xl bg-brand-blue/20 flex items-center justify-center text-brand-blue group-hover:scale-110 transition-transform duration-300">
+                                            <i class="fas fa-home"></i>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="font-bold text-white group-hover:text-brand-blue transition-colors text-lg">
+                                                Molyko Heights</p>
+                                            <p class="text-xs text-brand-cyan uppercase tracking-wider font-bold">UB
+                                                Junction</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-6 text-gray-300 font-mono text-sm">15 Oct 2025</td>
+                                <td class="p-6 font-bold text-white text-lg">280,000 FCFA</td>
+                                <td class="p-6">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 text-green-400 text-xs font-bold border border-green-500/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                                        Paid
+                                    </span>
+                                </td>
+                                <td class="p-6 text-right">
+                                    <button
+                                        class="text-xs font-bold uppercase tracking-wider text-brand-blue hover:text-white px-5 py-2.5 rounded-xl border border-brand-blue/30 hover:bg-brand-blue transition-all">
+                                        <i class="fas fa-download mr-1"></i> Receipt (500 FCFA)
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors group">
+                                <td class="p-6">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-12 h-12 rounded-2xl bg-brand-gold/20 flex items-center justify-center text-brand-gold group-hover:scale-110 transition-transform duration-300">
+                                            <i class="fas fa-home"></i>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="font-bold text-white group-hover:text-brand-blue transition-colors text-lg">
+                                                Executive Single</p>
+                                            <p class="text-xs text-brand-cyan uppercase tracking-wider font-bold">
+                                                Bonduma</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-6 text-gray-300 font-mono text-sm">28 Sep 2024</td>
+                                <td class="p-6 font-bold text-white text-lg">350,000 FCFA</td>
+                                <td class="p-6">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 text-green-400 text-xs font-bold border border-green-500/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                                        Paid
+                                    </span>
+                                </td>
+                                <td class="p-6 text-right">
+                                    <button
+                                        class="text-xs font-bold uppercase tracking-wider text-brand-blue hover:text-white px-5 py-2.5 rounded-xl border border-brand-blue/30 hover:bg-brand-blue transition-all">
+                                        <i class="fas fa-download mr-1"></i> Receipt (500 FCFA)
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors group">
+                                <td class="p-6">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-12 h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                                            <i class="fas fa-home"></i>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="font-bold text-white group-hover:text-brand-blue transition-colors text-lg">
+                                                Classic 1-BR</p>
+                                            <p class="text-xs text-brand-cyan uppercase tracking-wider font-bold">Mile
+                                                17 Area</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-6 text-gray-300 font-mono text-sm">10 Jan 2023</td>
+                                <td class="p-6 font-bold text-white text-lg">500,000 FCFA</td>
+                                <td class="p-6">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 text-green-400 text-xs font-bold border border-green-500/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                                        Paid
+                                    </span>
+                                </td>
+                                <td class="p-6 text-right">
+                                    <button
+                                        class="text-xs font-bold uppercase tracking-wider text-brand-blue hover:text-white px-5 py-2.5 rounded-xl border border-brand-blue/30 hover:bg-brand-blue transition-all">
+                                        <i class="fas fa-download mr-1"></i> Receipt (500 FCFA)
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-main border-t border-white/5 pt-12 pb-8 mt-auto relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <a href="#" class="flex items-center gap-2 mb-1">
+                        <img src="../../images/logo.png" alt="HosteLink" class="h-8 w-auto">
+                        <span class="font-serif text-2xl font-bold tracking-tight text-white">Hoste<span
+                                class="text-brand-blue">Link</span></span>
+                    </a>
+                    <p class="text-gray-500 text-xs mt-1">© 2025 HosteLink. Student Portal.</p>
+                </div>
+                <div class="flex gap-6 text-gray-400 text-sm">
+                    <a href="../botChatpage.html" class="hover:text-white transition-colors">AI Support</a>
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('translate-x-full');
+
+            if (mobileMenu.classList.contains('translate-x-full')) {
+                menuIcon.classList.remove('opacity-0', 'scale-0');
+                closeIcon.classList.add('opacity-0', 'scale-0');
+            } else {
+                menuIcon.classList.add('opacity-0', 'scale-0');
+                closeIcon.classList.remove('opacity-0', 'scale-0');
+            }
+        });
+
+    </script>
+    <script src="../../js/ripple.js"></script>
+    <script type="module" src="../../js/studentDashboard.js"></script>
+    </script>
+</body>
+
+</html>

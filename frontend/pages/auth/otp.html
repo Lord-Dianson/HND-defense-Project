@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP | HosteLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/index.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { main: '#0f111a', sec: '#161b28', card: '#1e2538' },
+                        brand: { blue: '#3b82f6', cyan: '#00b4db', gold: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script type="importmap">
+    {
+        "imports": {
+            "@capacitor/preferences": "https://esm.sh/@capacitor/preferences",
+            "@capacitor/core": "https://esm.sh/@capacitor/core"
+        }
+    }
+    </script>
+    <style>
+        .otp-input {
+            width: 3.5rem;
+            height: 3.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+
+<body class="antialiased font-sans">
+    <canvas id="water-canvas"></canvas>
+
+    <div
+        class="min-h-screen flex items-center justify-center px-4 py-12 relative z-10 bg-[url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=2070')] bg-cover bg-fixed bg-center">
+        <div class="absolute inset-0 bg-dark-main/90 z-0"></div>
+
+        <div class="w-full max-w-md relative z-10 animate-fade-in-up">
+            <!-- Logo Section -->
+            <div class="text-center mb-8">
+                <a href="#" class="inline-block group">
+                    <div class="flex items-center justify-center gap-3 mb-2">
+                        <img src="../../images/logo.png" alt="HosteLink" class="h-12 w-auto">
+                        <span class="font-serif text-3xl font-bold tracking-tight text-white">Hoste<span
+                                class="text-brand-blue">Link</span></span>
+                    </div>
+                </a>
+            </div>
+
+            <div
+                class="glass-panel rounded-[2rem] p-8 md:p-10 backdrop-blur-2xl border border-white/10 shadow-2xl relative overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-brand-blue/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none">
+                </div>
+
+                <div class="text-center mb-8">
+                    <div
+                        class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-brand-blue border border-white/5">
+                        <i class="fas fa-shield-alt text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Verify OTP</h2>
+                    <p class="text-gray-400 text-sm">Enter the 6-digit code sent to your email.</p>
+                </div>
+
+                <form id="otp-form" class="space-y-8">
+
+                    <div class="flex justify-center gap-2">
+                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric" required>
+                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric" required>
+                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric" required>
+                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric" required>
+                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric" required>
+                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]" inputmode="numeric" required>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-brand-blue to-blue-600 text-white font-bold py-3.5 px-6 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/20 active:scale-95">
+                        Verify & Sign Up
+                    </button>
+
+                    <div class="text-center">
+                        <p class="text-sm text-gray-400">Didn't receive code? <a href="#" id="resend-link"
+                                class="text-brand-blue font-bold hover:underline">Resend</a></p>
+                    </div>
+
+                    <div class="text-center border-t border-white/10 pt-6">
+                        <a href="signup.html"
+                            class="text-sm text-gray-400 hover:text-white transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-arrow-left text-xs"></i> Back to Signup
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reused Water Effect -->
+    <script src="../../js/ripple.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="../../js/otp.js"></script>
+</body>
+
+</html>

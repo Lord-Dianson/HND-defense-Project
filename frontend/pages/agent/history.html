@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Listings | HosteLink Agent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/agent.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { main: '#0f111a', sec: '#161b28', card: '#1e2538' },
+                        brand: { blue: '#3b82f6', cyan: '#00b4db', gold: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="antialiased bg-dark-main text-white font-sans flex flex-col min-h-screen">
+    <canvas id="water-canvas" data-ripple-color="251, 191, 36"></canvas>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-[100] transition-all duration-500 py-4 px-6" id="navbar">
+        <div
+            class="max-w-7xl mx-auto flex items-center justify-between glass-card rounded-full px-6 py-2.5 bg-dark-sec/50">
+            <a href="../index.html" class="flex items-center gap-2">
+                <img src="../../images/logo.png" alt="HosteLink" class="h-10 w-auto">
+                <span class="font-serif text-xl font-bold tracking-tight text-white">Hoste<span
+                        class="text-brand-gold">Link</span></span>
+            </a>
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="profile.html"
+                    class="nav-link px-4 py-1.5 text-sm font-medium text-gray-400 hover:text-white">Dashboard<div
+                        class="nav-indicator"></div></a>
+                <a href="uploads.html"
+                    class="nav-link px-4 py-1.5 text-sm font-medium text-gray-400 hover:text-white">Uploads<div
+                        class="nav-indicator"></div></a>
+                <a href="history.html" class="nav-link active px-4 py-1.5 text-sm font-bold text-brand-gold">My Listings
+                    <div class="nav-indicator bg-brand-gold/20"></div>
+                </a>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <div class="flex items-center gap-3 border-r border-white/10 pr-4">
+                    <img src="https://i.pravatar.cc/150?u=agent"
+                        class="w-8 h-8 rounded-full border border-brand-gold profile-img">
+                </div>
+                <a href="../login.html"
+                    class="text-gray-400 hover:text-red-400 transition-colors text-xs font-medium"><i
+                        class="fas fa-sign-out-alt"></i></a>
+            </div>
+            <button id="menu-toggle" class="md:hidden z-[110] relative">
+                <i class="fas fa-bars text-lg text-white" id="menu-icon"></i>
+                <i class="fas fa-times text-lg text-white hidden" id="close-icon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-dark-main/95 backdrop-blur-xl z-[90] transform translate-x-full transition-transform duration-300 md:hidden flex flex-col justify-center items-center space-y-8">
+        <a href="profile.html" class="text-2xl font-bold text-gray-400 hover:text-white transition-colors">Dashboard</a>
+        <a href="uploads.html" class="text-2xl font-bold text-gray-400 hover:text-white transition-colors">Uploads</a>
+        <a href="history.html" class="text-2xl font-bold text-brand-gold hover:text-white transition-colors">My
+            Listings</a>
+        <div class="h-px w-16 bg-white/10"></div>
+        <a href="../login.html" class="text-red-500 font-bold flex items-center gap-2">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <main class="relative pt-28 pb-16 px-4 flex-1">
+        <div class="max-w-4xl mx-auto">
+            <header class="mb-8 flex flex-col md:flex-row justify-between items-end gap-6 animate-fade-in-up">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold font-serif mb-1">My <span
+                            class="text-gradient-gold">Listings</span></h1>
+                    <p class="text-gray-400 text-sm font-light">Manage your hostel properties and view status.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button
+                        class="bg-brand-gold text-dark-main font-bold py-1.5 px-3 rounded-lg text-xs">Active</button>
+                    <button
+                        class="bg-white/5 text-gray-400 hover:text-white py-1.5 px-3 rounded-lg text-xs transition-colors">Pending</button>
+                    <button
+                        class="bg-white/5 text-gray-400 hover:text-white py-1.5 px-3 rounded-lg text-xs transition-colors">Archived</button>
+                </div>
+            </header>
+
+            <div class="space-y-3 animate-fade-in-up delay-100">
+
+                <!-- Listing Item 1 -->
+                <div class="history-item group p-3 rounded-xl mb-3">
+                    <img src="https://images.unsplash.com/photo-1555854743-e3c2f6a5fc1a?auto=format&fit=crop&q=80&w=200"
+                        class="w-16 h-16 rounded-lg object-cover mr-4 border border-white/10 group-hover:scale-105 transition-transform">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-bold text-white truncate">Sunny Side Apartments</h3>
+                            <span class="status-badge status-active text-[10px] px-2 py-0.5">Active</span>
+                        </div>
+                        <p class="text-gray-400 text-xs mb-1"><i class="fas fa-map-marker-alt text-brand-gold mr-1"></i>
+                            Molyko, Buea</p>
+                        <div class="flex items-center gap-3 text-[10px] text-gray-500">
+                            <span><i class="fas fa-eye mr-1"></i> 450 Views</span>
+                            <span><i class="fas fa-calendar mr-1"></i> 2d ago</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5 ml-3">
+                        <button
+                            class="text-brand-gold bg-brand-gold/10 hover:bg-brand-gold hover:text-dark-main p-1.5 rounded-md transition-colors text-xs"
+                            title="Edit"><i class="fas fa-pen"></i></button>
+                        <button
+                            class="text-red-400 bg-red-400/10 hover:bg-red-400 hover:text-white p-1.5 rounded-md transition-colors text-xs"
+                            title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+
+                <!-- Listing Item 2 -->
+                <div class="history-item group p-3 rounded-xl mb-3">
+                    <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=200"
+                        class="w-16 h-16 rounded-lg object-cover mr-4 border border-white/10 group-hover:scale-105 transition-transform">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-bold text-white truncate">Executive Suite</h3>
+                            <span class="status-badge status-active text-[10px] px-2 py-0.5">Active</span>
+                        </div>
+                        <p class="text-gray-400 text-xs mb-1"><i class="fas fa-map-marker-alt text-brand-gold mr-1"></i>
+                            Bonduma, Buea</p>
+                        <div class="flex items-center gap-3 text-[10px] text-gray-500">
+                            <span><i class="fas fa-eye mr-1"></i> 1,200 Views</span>
+                            <span><i class="fas fa-calendar mr-1"></i> 1w ago</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5 ml-3">
+                        <button
+                            class="text-brand-gold bg-brand-gold/10 hover:bg-brand-gold hover:text-dark-main p-1.5 rounded-md transition-colors text-xs"><i
+                                class="fas fa-pen"></i></button>
+                        <button
+                            class="text-red-400 bg-red-400/10 hover:bg-red-400 hover:text-white p-1.5 rounded-md transition-colors text-xs"><i
+                                class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+
+                <!-- Listing Item 3 -->
+                <div class="history-item group p-3 rounded-xl mb-3">
+                    <div
+                        class="w-16 h-16 rounded-lg bg-white/5 flex items-center justify-center mr-4 border border-white/10 text-gray-500">
+                        <i class="fas fa-image text-lg"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-bold text-white truncate">Riverside Lodge</h3>
+                            <span class="status-badge status-pending text-[10px] px-2 py-0.5">Pending</span>
+                        </div>
+                        <p class="text-gray-400 text-xs mb-1"><i class="fas fa-map-marker-alt text-brand-gold mr-1"></i>
+                            Checkpoint</p>
+                        <div class="flex items-center gap-3 text-[10px] text-gray-500">
+                            <span><i class="fas fa-clock mr-1"></i> Waiting</span>
+                            <span><i class="fas fa-calendar mr-1"></i> 4h ago</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5 ml-3">
+                        <button class="text-gray-400 bg-white/5 cursor-not-allowed p-1.5 rounded-md text-xs"><i
+                                class="fas fa-lock"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-main border-t border-white/5 pt-8 pb-6 mt-auto relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <a href="#" class="font-serif text-xl font-bold">HosteLink<span class="text-brand-gold">.</span></a>
+                    <p class="text-gray-500 text-[10px] mt-1">© 2025 HosteLink. Agent Portal.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                const isOpen = !mobileMenu.classList.contains('translate-x-full');
+
+                if (isOpen) {
+                    mobileMenu.classList.add('translate-x-full');
+                    menuIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                    document.body.style.overflow = '';
+                } else {
+                    mobileMenu.classList.remove('translate-x-full');
+                    menuIcon.classList.add('hidden');
+                    closeIcon.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        }
+
+    </script>
+    <script src="../../js/ripple.js"></script>
+    <script type="module" src="../../js/agentDashboard.js"></script>
+    </script>
+</body>
+
+</html>

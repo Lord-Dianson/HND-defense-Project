@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `OtpSessions` (
   `otp_hash` varchar(255) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role` varchar(50) NOT NULL DEFAULT 'student',
+  `profile` varchar(512) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `expires_at` datetime NOT NULL,
   KEY `jti_index` (`jti`),

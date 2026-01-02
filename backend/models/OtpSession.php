@@ -20,6 +20,7 @@ class OtpSession extends Model
         'otp_hash',
         'password_hash',
         'role',
+        'profile',
         'created_at',
         'expires_at'
     ];

@@ -12,6 +12,6 @@ class Hostel extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'hostelID', 'name', 'location', 'capacity', 'description', 'facilities', 'status', 'agentID', 'landLordID', 'createdAt', 'updatedAt'
+        'hostelID', 'name', 'location', 'image', 'capacity','roomsLeft', 'price', 'facilities','description','status', 'agentID', 'landlordPhone','verified','createdAt', 'updatedAt'
     ];
 }

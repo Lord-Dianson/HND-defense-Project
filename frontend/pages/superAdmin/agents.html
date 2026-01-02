@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Agents | Super Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { main: '#0f111a', sec: '#161b28', card: '#1e2538' },
+                        admin: { primary: '#8b5cf6', secondary: '#6366f1' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-dark-main text-white font-sans flex h-screen overflow-hidden text-sm">
+
+    <!-- Sidebar (Reused) -->
+    <aside class="w-56 bg-dark-sec border-r border-white/5 flex-col hidden md:flex z-20">
+        <div class="h-14 flex items-center px-6 border-b border-white/5 gap-3">
+            <img src="../../images/logo.png" alt="HosteLink" class="h-8 w-auto">
+            <span class="font-serif text-lg font-bold tracking-tight text-white">Hoste<span
+                    class="text-admin-primary">Link</span></span>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4 space-y-1">
+            <p class="px-6 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Overview</p>
+            <a href="mainDashboard.html" class="sidebar-link hover:text-white">
+                <i class="fas fa-th-large w-4"></i> Dashboard
+            </a>
+            <p class="px-6 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 mt-6">Management</p>
+            <a href="hostels.html" class="sidebar-link hover:text-white">
+                <i class="fas fa-building w-4"></i> Hostels
+            </a>
+            <a href="agents.html" class="sidebar-link active">
+                <i class="fas fa-user-tie w-4"></i> Agents
+            </a>
+            <a href="students.html" class="sidebar-link hover:text-white">
+                <i class="fas fa-user-graduate w-4"></i> Students
+            </a>
+            <p class="px-6 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 mt-6">System</p>
+            <a href="../login.html" class="sidebar-link hover:text-red-400">
+                <i class="fas fa-sign-out-alt w-4"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0 relative">
+        <canvas id="water-canvas" class="absolute inset-0 pointer-events-none opacity-20 z-0"
+            data-ripple-color="139, 92, 246"></canvas>
+
+        <header
+            class="h-14 bg-dark-main/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-5 z-10 sticky top-0">
+            <div class="flex items-center gap-4">
+                <h2 class="text-sm font-bold">Agent Management</h2>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-5 z-10">
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Agent Card 1 -->
+                <div class="admin-card p-4 flex flex-col items-center text-center relative group" id="agent-1">
+                    <button onclick="removeAgent('1')"
+                        class="absolute top-2 right-2 text-red-500/50 hover:text-red-500 transition-colors"
+                        title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    <img src="https://i.pravatar.cc/300?u=agent1"
+                        class="w-12 h-12 rounded-full border-2 border-admin-primary/20 mb-2">
+                    <h3 class="text-sm font-bold text-white">Agent Smith</h3>
+                    <p class="text-gray-400 text-[10px] mb-2 leading-tight">HosteLink Real Estate</p>
+
+                    <div class="w-full bg-white/5 rounded py-1 px-2 mb-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] text-gray-500 uppercase">Uploads</span>
+                            <span class="font-bold text-white text-xs">12</span>
+                        </div>
+                    </div>
+
+                    <a href="hostels.html" class="text-[10px] text-admin-primary hover:underline">View Properties</a>
+                </div>
+
+                <!-- Agent Card 2 -->
+                <div class="admin-card p-4 flex flex-col items-center text-center relative group" id="agent-2">
+                    <button onclick="removeAgent('2')"
+                        class="absolute top-2 right-2 text-red-500/50 hover:text-red-500 transition-colors"
+                        title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    <img src="https://i.pravatar.cc/300?u=agent2"
+                        class="w-12 h-12 rounded-full border-2 border-white/5 mb-2 grayscale">
+                    <h3 class="text-sm font-bold text-white">Jane Doe</h3>
+                    <p class="text-gray-400 text-[10px] mb-2 leading-tight">Independent Agent</p>
+
+                    <div class="w-full bg-white/5 rounded py-1 px-2 mb-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] text-gray-500 uppercase">Uploads</span>
+                            <span class="font-bold text-white text-xs">4</span>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-gray-600 cursor-not-allowed">No Properties</span>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function removeAgent(id) {
+            if (confirm('Are you sure you want to remove this agent?')) {
+                const card = document.getElementById(`agent-${id}`);
+                card.style.transform = 'scale(0.9)';
+                card.style.opacity = '0';
+                setTimeout(() => card.remove(), 300);
+            }
+        }
+
+    </script>
+    <script src="../../js/ripple.js"></script>
+</body>
+
+</html>

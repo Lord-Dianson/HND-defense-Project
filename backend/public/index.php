@@ -16,6 +16,8 @@ use Controllers\HostelControllers;
 use Controllers\paymentControllers;
 use Controllers\userController;
 
+
+
 try {
     // 2. Load Environment Variables
     $dotenv = Dotenv::createImmutable(dirname(__DIR__));
@@ -28,25 +30,44 @@ try {
     require_once __DIR__ . '/../utils/sendEmail.php';
     require_once __DIR__ . '/../utils/functions.php';
 
-    // 5. Setup Slim App
-    $app = AppFactory::create();
+    // 5. Configure session for cross-origin requests
+    ini_set('session.cookie_samesite', 'None');
+    ini_set('session.cookie_secure', 'false'); // Set to 'true' in production with HTTPS
+    ini_set('session.cookie_httponly', 'true');
     
-    // Set base path for routing
-    // When using the built-in PHP server, basePath should be empty
-    // When running under Apache in a subdirectory, set it accordingly
-    $basePath = '';
-    if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] !== '/index.php') {
-        $basePath = dirname($_SERVER['SCRIPT_NAME']);
+    // Start session early to ensure consistent session handling
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
     }
-    if ($basePath !== '') {
-        $app->setBasePath($basePath);
-    }
+
+    // 6. Setup Slim App
+    $app = AppFactory::create();
+
     $app->addBodyParsingMiddleware();
     $app->addRoutingMiddleware();
+
+    $app->add(function ($request, $handler) {
+        $response = $handler->handle($request);
+        return $response
+            ->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin'))
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+            ->withHeader('Access-Control-Allow-Credentials', 'true');
+    });
+
+    $app->options('/{routes:.+}', function ($request, $response, $args) {
+        return $response
+            ->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin'))
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+            ->withHeader('Access-Control-Allow-Credentials', 'true');
+    });
+
 
     // Add error middleware with verbose output
     $errorMiddleware = $app->addErrorMiddleware(true, true, true);
     $errorMiddleware->getDefaultErrorHandler()->forceContentType('application/json');
+
 
     $authControllers = new AuthController();
     $adminControllers = new AdminControllers();
@@ -58,14 +79,17 @@ try {
     // Define routes
     // Test route
     $app->get("/api", [$authControllers, 'test']);
-    
+
     // Auth Routes
     $app->post('/api/auth/send-otp', [$authControllers, 'sendOTP']);
     $app->post('/api/auth/signup', [$authControllers, 'signup']);
     $app->post('/api/auth/resend-otp', [$authControllers, 'resendOTP']);
     $app->post('/api/auth/login', [$authControllers, 'login']);
     $app->post('/api/auth/reset-password', [$authControllers, 'resetPassword']);
+    $app->post('/api/auth/forgot-password', [$authControllers, 'forgotPassword']);
+    $app->post('/api/auth/update-password', [$authControllers, 'updatePassword']);
     $app->get('/api/auth/me', [$authControllers, 'getUserById']);
+    $app->post('/api/auth/get-token', [$authControllers, 'getToken']);
 
     // Admin Routes
     $app->get('/api/admin/users', [$adminControllers, 'listAllUsers']);
@@ -75,8 +99,8 @@ try {
     $app->post('/api/admin/agents/pay', [$adminControllers, 'payAgent']);
 
     // Agent Routes
-    $app->post('/api/agent/hostels', [$agentControllers, 'submitHostel']);
-    $app->get('/api/agent/hostels', [$agentControllers, 'listSubmissionHistory']);
+    $app->post('/api/agent/submit-hostels', [$agentControllers, 'submitHostel']);
+    $app->get('/api/agent/list-hostels', [$agentControllers, 'listSubmissionHistory']);
     $app->post('/api/agent/payments/{id}', [$agentControllers, 'recievePayment']);
     $app->get('/api/agent/payments', [$agentControllers, 'listPaymentHistory']);
 
@@ -97,7 +121,7 @@ try {
     // User Routes
     $app->get('/api/users', [$userControllers, 'getAllUsers']);
     $app->post('/api/users/by-id', [$userControllers, 'getUserById']);
-    $app->get('/api/payments', [$userControllers, 'getPaymentHistory']);
+    $app->get('/api/payments/history', [$userControllers, 'getPaymentHistory']);
 
     // Run the app
     $app->run();
@@ -112,4 +136,3 @@ try {
     ]);
     exit;
 }
-?>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | HosteLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        .input-readonly {
+            background-color: transparent;
+            border-color: transparent;
+            cursor: default;
+            padding-left: 0;
+        }
+
+        .input-editable {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            cursor: text;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { main: '#0f111a', sec: '#161b28', card: '#1e2538' },
+                        brand: { blue: '#3b82f6', cyan: '#00b4db', gold: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="antialiased bg-dark-main text-white font-sans flex flex-col min-h-screen">
+
+    <canvas id="water-canvas"></canvas>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-[100] transition-all duration-500 py-4 px-6" id="navbar">
+        <div class="max-w-7xl mx-auto flex items-center justify-between glass-card rounded-full px-8 py-3">
+            <a href="../index.html" class="flex items-center gap-2">
+                <img src="../../images/logo.png" alt="HosteLink" class="h-10 w-auto">
+                <span class="font-serif text-2xl font-bold tracking-tight text-white">Hoste<span
+                        class="text-brand-blue">Link</span></span>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="hostels.html" class="nav-link px-5 py-2 text-sm font-medium text-gray-400">Hostels<div
+                        class="nav-indicator"></div></a>
+                <a href="profile.html" class="nav-link active px-5 py-2 text-sm font-medium text-white">Profile<div
+                        class="nav-indicator"></div></a>
+                <a href="History.html" class="nav-link px-5 py-2 text-sm font-medium text-gray-400">History<div
+                        class="nav-indicator"></div></a>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="../botChatpage.html"
+                    class="text-gray-400 hover:text-brand-blue transition-colors mr-2 relative group"
+                    title="AI Assistant">
+                    <i class="fas fa-robot text-lg"></i>
+                    <span
+                        class="absolute top-full right-0 mt-2 bg-dark-card border border-white/10 px-2 py-1 rounded text-xs text-brand-blue opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Ask
+                        AI</span>
+                </a>
+                <a href="#"
+                    class="logout-btn flex items-center gap-2 border border-red-500/40 text-red-500 px-5 py-2 rounded-full text-sm font-medium hover:bg-red-500/10 transition-all">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden relative z-[110] w-10 h-10 flex items-center justify-center">
+                <i id="menu-icon" class="fas fa-bars text-xl transition-all"></i>
+                <i id="close-icon" class="fas fa-times text-xl absolute opacity-0 scale-0 transition-all"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu"
+        class="fixed inset-0 z-[90] bg-dark-sec flex flex-col items-center justify-center space-y-8 translate-x-full transition-transform duration-500 md:hidden">
+        <a href="hostels.html" class="mobile-link text-3xl font-bold text-gray-400">Hostels</a>
+        <a href="profile.html" class="mobile-link text-3xl font-bold text-white">Profile</a>
+        <a href="History.html" class="mobile-link text-3xl font-bold text-gray-400">History</a>
+        <a href="../botChatpage.html" class="mobile-link text-3xl font-bold text-brand-blue"><i
+                class="fas fa-robot mr-2"></i> AI Assistant</a>
+        <a href="#"
+            class="logout-btn w-64 border border-red-500/40 text-red-500 py-3 rounded-full font-bold flex items-center justify-center gap-3 mt-8">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <!-- Chat Bot FAB -->
+    <a href="../botChatpage.html"
+        class="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-brand-blue to-blue-600 rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 transition-transform z-50 group hover:shadow-blue-500/40">
+        <i class="fas fa-robot text-2xl group-hover:rotate-12 transition-transform"></i>
+        <div
+            class="absolute right-full mr-4 bg-dark-card border border-white/10 px-4 py-2 rounded-xl text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
+            Ask AI Assistant
+            <div
+                class="absolute top-1/2 -right-1.5 w-3 h-3 bg-dark-card border-t border-r border-white/10 transform rotate-45 -translate-y-1/2">
+            </div>
+        </div>
+        <span
+            class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2 border-dark-main"></span>
+    </a>
+
+    <!-- Main Content -->
+    <main class="relative pt-32 pb-20 px-4 flex-1">
+        <div class="max-w-5xl mx-auto">
+            <header class="mb-12 animate-fade-in-up text-center md:text-left">
+                <h1 class="text-3xl md:text-5xl font-bold font-serif mb-2">Your <span
+                        class="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300">Profile</span>
+                </h1>
+                <p class="text-gray-400 text-lg font-light">Manage your personal information and settings.</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Profile Card -->
+                <div class="lg:col-span-1 animate-fade-in-up delay-100">
+                    <div
+                        class="glass-panel p-8 rounded-[2rem] text-center relative overflow-hidden group border border-white/5 shadow-xl">
+                        <div
+                            class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-brand-blue/20 to-transparent">
+                        </div>
+                        <div class="relative z-10">
+                            <div class="relative inline-block">
+                                <img src="../../images/Adamu.jpeg" alt="Student Profile"
+                                    class="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-dark-card shadow-2xl relative z-10 object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div
+                                    class="absolute inset-0 rounded-full border-2 border-brand-blue animate-ping opacity-20">
+                                </div>
+                            </div>
+                            <h2 class="text-2xl font-bold mb-1 profile-name" id="profile-name">John Doe</h2>
+
+
+                            <div class="flex justify-center gap-4 mb-8">
+                                <div
+                                    class="text-center px-4 py-2 rounded-xl bg-white/5 backdrop-blur-sm border border-white/5">
+                                    <span class="block text-xl font-bold text-white">4.8</span>
+                                    <span class="text-xs text-gray-400">Rating</span>
+                                </div>
+                                <div
+                                    class="text-center px-4 py-2 rounded-xl bg-white/5 backdrop-blur-sm border border-white/5">
+                                    <span class="block text-xl font-bold text-white">2yr</span>
+                                    <span class="text-xs text-gray-400">Member</span>
+                                </div>
+                            </div>
+
+                            <button
+                                class="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 group-hover:border-brand-blue/50">
+                                <i class="fas fa-camera"></i>
+                                Change Picture
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Form -->
+                <div class="lg:col-span-2 animate-fade-in-up delay-200">
+                    <div class="glass-panel p-8 rounded-[2rem] border border-white/5 shadow-xl">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-2xl font-bold">Account Information</h3>
+                            <button id="edit-btn" onclick="toggleEdit()"
+                                class="text-sm text-brand-blue hover:text-white transition-colors font-semibold px-4 py-2 rounded-lg hover:bg-white/5">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </button>
+                        </div>
+
+                        <form id="profile-form" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="full-name"
+                                        class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Full
+                                        Name</label>
+                                    <input type="text" id="full-name" value="John Doe" readonly
+                                        class="w-full input-readonly rounded-xl px-5 py-3 text-white focus:outline-none transition-all duration-300">
+                                </div>
+                                <div>
+                                    <label for="email"
+                                        class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Email
+                                        Address</label>
+                                    <input type="email" id="email" value="john.doe@university.com" readonly
+                                        class="w-full input-readonly rounded-xl px-5 py-3 text-white focus:outline-none transition-all duration-300">
+                                </div>
+                                <div>
+                                    <label for="phone"
+                                        class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Phone
+                                        Number</label>
+                                    <input type="tel" id="phone" value="+237 677 123 456" readonly
+                                        class="w-full input-readonly rounded-xl px-5 py-3 text-white focus:outline-none transition-all duration-300">
+                                </div>
+
+                            </div>
+
+                            <div id="save-actions"
+                                class="pt-6 border-t border-white/5 flex justify-end opacity-0 pointer-events-none transform translate-y-2 transition-all duration-300">
+                                <button type="button" onclick="cancelEdit()"
+                                    class="bg-gray-700/50 hover:bg-gray-600/50 text-white font-bold py-3 px-6 rounded-xl transition-all mr-4">
+                                    Cancel
+                                </button>
+                                <button type="submit"
+                                    class="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-400 hover:to-brand-blue text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-blue-500/20 transition-all transform hover:-translate-y-1">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-main border-t border-white/5 pt-12 pb-8 mt-auto relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <a href="#" class="font-serif text-2xl font-bold">HosteLink<span
+                            class="text-brand-blue">.</span></a>
+                    <p class="text-gray-500 text-xs mt-1">© 2025 HosteLink. Student Portal.</p>
+                </div>
+                <div class="flex gap-6 text-gray-400 text-sm">
+                    <a href="../botChatpage.html" class="hover:text-white transition-colors">AI Support</a>
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('translate-x-full');
+
+            if (mobileMenu.classList.contains('translate-x-full')) {
+                menuIcon.classList.remove('opacity-0', 'scale-0');
+                closeIcon.classList.add('opacity-0', 'scale-0');
+            } else {
+                menuIcon.classList.add('opacity-0', 'scale-0');
+                closeIcon.classList.remove('opacity-0', 'scale-0');
+            }
+        });
+
+        // Edit Profile Logic
+        let originalValues = {};
+        const form = document.getElementById('profile-form');
+        const inputs = form.querySelectorAll('input');
+        const editBtn = document.getElementById('edit-btn');
+        const saveActions = document.getElementById('save-actions');
+        let isEditing = false;
+
+        function toggleEdit() {
+            isEditing = true;
+            editBtn.classList.add('hidden');
+            saveActions.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+
+            inputs.forEach(input => {
+                originalValues[input.id] = input.value;
+                input.readOnly = false;
+                input.classList.remove('input-readonly');
+                input.classList.add('input-editable');
+                input.classList.add('border', 'border-brand-blue/30'); // Add focus visual
+            });
+            inputs[0].focus();
+        }
+
+        function cancelEdit() {
+            isEditing = false;
+            editBtn.classList.remove('hidden');
+            saveActions.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+
+            inputs.forEach(input => {
+                input.value = originalValues[input.id];
+                input.readOnly = true;
+                input.classList.add('input-readonly');
+                input.classList.remove('input-editable');
+                input.classList.remove('border', 'border-brand-blue/30');
+            });
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulate Save
+            const btn = saveActions.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                isEditing = false;
+                editBtn.classList.remove('hidden');
+                saveActions.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+
+                inputs.forEach(input => {
+                    input.readOnly = true;
+                    input.classList.add('input-readonly');
+                    input.classList.remove('input-editable');
+                    input.classList.remove('border', 'border-brand-blue/30');
+                });
+
+                // Show toast or feedback (optional)
+            }, 1000);
+        });
+
+    </script>
+    <script src="../../js/ripple.js"></script>
+    <script type="module" src="../../js/studentDashboard.js"></script>
+    </script>
+</body>
+
+</html>

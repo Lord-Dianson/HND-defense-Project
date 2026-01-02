@@ -16,7 +16,7 @@ class HostelControllers extends paymentControllers
     public function getAllHostels($req, $res)
     {
         try {
-            $hostels = Hostel::where('verified', true)->get();
+            $hostels = Hostel::where('status', 'available')->get();
             $res->getBody()->write(json_encode(['success' => true, 'count' => count($hostels), 'hostels' => $hostels]));
             return $res->withStatus(200)->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
@@ -117,8 +117,8 @@ class HostelControllers extends paymentControllers
 
             $body = $req->getParsedBody();
             $hostel = Hostel::find($body['hostelID'] ?? '');
-            if (!$hostel || !$hostel->verified) {
-                $res->getBody()->write(json_encode(['success' => false, 'message' => 'Hostel not found or not verified']));
+            if (!$hostel || $hostel->status !== 'available') {
+                $res->getBody()->write(json_encode(['success' => false, 'message' => 'Hostel not found or not available']));
                 return $res->withStatus(404)->withHeader('Content-Type', 'application/json');
             }
 

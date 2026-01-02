@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students | Super Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { main: '#0f111a', sec: '#161b28', card: '#1e2538' },
+                        admin: { primary: '#8b5cf6', secondary: '#6366f1' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-dark-main text-white font-sans flex h-screen overflow-hidden text-sm">
+
+    <!-- Sidebar (Reused) -->
+    <aside class="w-56 bg-dark-sec border-r border-white/5 flex-col hidden md:flex z-20">
+        <div class="h-14 flex items-center px-6 border-b border-white/5 gap-3">
+            <img src="../../images/logo.png" alt="HosteLink" class="h-8 w-auto">
+            <span class="font-serif text-lg font-bold tracking-tight text-white">Hoste<span
+                    class="text-admin-primary">Link</span></span>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4 space-y-1">
+            <p class="px-6 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Overview</p>
+            <a href="mainDashboard.html" class="sidebar-link hover:text-white">
+                <i class="fas fa-th-large w-4"></i> Dashboard
+            </a>
+            <p class="px-6 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 mt-6">Management</p>
+            <a href="hostels.html" class="sidebar-link hover:text-white">
+                <i class="fas fa-building w-4"></i> Hostels
+            </a>
+            <a href="agents.html" class="sidebar-link hover:text-white">
+                <i class="fas fa-user-tie w-4"></i> Agents
+            </a>
+            <a href="students.html" class="sidebar-link active">
+                <i class="fas fa-user-graduate w-4"></i> Students
+            </a>
+            <p class="px-6 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 mt-6">System</p>
+            <a href="../login.html" class="sidebar-link hover:text-red-400">
+                <i class="fas fa-sign-out-alt w-4"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0 relative">
+        <canvas id="water-canvas" class="absolute inset-0 pointer-events-none opacity-20 z-0"
+            data-ripple-color="139, 92, 246"></canvas>
+
+        <header
+            class="h-14 bg-dark-main/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-5 z-10 sticky top-0">
+            <div class="flex items-center gap-4">
+                <h2 class="text-sm font-bold">Student Management</h2>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-5 z-10">
+
+            <div class="admin-card p-0 overflow-hidden">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th class="pl-4">Name</th>
+                            <th>Email</th>
+                            <th>Institution</th>
+                            <th class="pr-4 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Student 1 -->
+                        <tr id="student-1">
+                            <td class="pl-4 font-bold text-white text-xs">John Doe</td>
+                            <td class="text-gray-400 text-xs">john.doe@ub.com</td>
+                            <td class="text-gray-400 text-xs">University of Buea</td>
+                            <td class="pr-4 text-right">
+                                <button onclick="removeStudent('1')"
+                                    class="text-red-500 hover:text-red-400 p-1.5 hover:bg-red-500/10 rounded transition-colors"
+                                    title="Remove">
+                                    <i class="fas fa-trash-alt text-xs"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Student 2 -->
+                        <tr id="student-2">
+                            <td class="pl-4 font-bold text-white text-xs">Sarah Connor</td>
+                            <td class="text-gray-400 text-xs">sarah.c@cuiib.com</td>
+                            <td class="text-gray-400 text-xs">CUIB</td>
+                            <td class="pr-4 text-right">
+                                <button onclick="removeStudent('2')"
+                                    class="text-red-500 hover:text-red-400 p-1.5 hover:bg-red-500/10 rounded transition-colors"
+                                    title="Remove">
+                                    <i class="fas fa-trash-alt text-xs"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function removeStudent(id) {
+            if (confirm('Are you sure you want to remove this student?')) {
+                const row = document.getElementById(`student-${id}`);
+                row.style.opacity = '0';
+                setTimeout(() => row.remove(), 300);
+            }
+        }
+
+    </script>
+    <script src="../../js/ripple.js"></script>
+    </script>
+</body>
+
+</html>

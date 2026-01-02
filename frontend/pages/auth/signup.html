@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | HosteLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="../../css/index.css">
+    <!-- Removed signup.css to rely on utility classes and index.css -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { main: '#0f111a', sec: '#161b28', card: '#1e2538' },
+                        brand: { blue: '#3b82f6', cyan: '#00b4db', gold: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script type="importmap">
+    {
+        "imports": {
+            "axios": "https://esm.sh/axios",
+            "@capacitor/preferences": "https://esm.sh/@capacitor/preferences",
+            "@capacitor/core": "https://esm.sh/@capacitor/core"
+        }
+    }
+    </script>
+
+    </script>
+    <style>
+        /* Floating Label Custom Adjustments */
+        .input-floating:focus~label,
+        .input-floating:not(:placeholder-shown)~label {
+            transform: translateY(-1.5rem) scale(0.85);
+            color: #3b82f6;
+        }
+    </style>
+</head>
+
+<body class="antialiased font-sans">
+    <canvas id="water-canvas"></canvas>
+
+    <div
+        class="min-h-screen flex items-center justify-center px-4 py-12 relative z-10 bg-[url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=2070')] bg-cover bg-fixed bg-center">
+        <div class="absolute inset-0 bg-dark-main/90 z-0"></div>
+
+        <div class="w-full max-w-lg relative z-10 animate-fade-in-up">
+            <!-- Logo Section -->
+            <div class="text-center mb-8">
+                <a href="../index.html" class="inline-block group">
+                    <div class="flex items-center justify-center gap-3 mb-2">
+                        <img src="../../images/logo.png" alt="HosteLink" class="h-12 w-auto">
+                        <span class="font-serif text-3xl font-bold tracking-tight text-white">Hoste<span
+                                class="text-brand-blue">Link</span></span>
+                    </div>
+                </a>
+                <p class="text-gray-400 text-sm font-light tracking-wide">Join the Student-Agent Ecosystem</p>
+            </div>
+
+            <div
+                class="glass-panel rounded-[2rem] p-8 md:p-10 backdrop-blur-2xl border border-white/10 shadow-2xl relative overflow-hidden">
+                <!-- Decorative Glow -->
+                <div
+                    class="absolute top-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 pointer-events-none">
+                </div>
+
+                <h2 class="text-2xl font-bold mb-8 text-center text-white">Create Account</h2>
+
+                <form id="signup-form" class="space-y-6">
+                    <!-- User Type Toggle -->
+                    <div>
+                        <label class="block text-sm font-medium mb-3 text-gray-300 ml-1">I am a</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="cursor-pointer relative group">
+                                <input type="radio" name="userType" value="student" class="peer hidden" checked>
+                                <div
+                                    class="glass-card rounded-2xl p-4 flex flex-col items-center justify-center border-2 border-transparent peer-checked:border-brand-blue peer-checked:bg-brand-blue/10 bg-white/5 transition-all hover:bg-white/10 peer-checked:shadow-lg peer-checked:shadow-blue-500/20">
+                                    <i
+                                        class="fas fa-graduation-cap text-2xl mb-2 text-gray-400 peer-checked:text-brand-blue group-hover:scale-110 transition-transform"></i>
+                                    <span class="font-semibold text-gray-300 peer-checked:text-white">Student</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer relative group">
+                                <input type="radio" name="userType" value="agent" class="peer hidden">
+                                <div
+                                    class="glass-card rounded-2xl p-4 flex flex-col items-center justify-center border-2 border-transparent peer-checked:border-brand-blue peer-checked:bg-brand-blue/10 bg-white/5 transition-all hover:bg-white/10 peer-checked:shadow-lg peer-checked:shadow-blue-500/20">
+                                    <i
+                                        class="fas fa-building text-2xl mb-2 text-gray-400 peer-checked:text-brand-blue group-hover:scale-110 transition-transform"></i>
+                                    <span class="font-semibold text-gray-300 peer-checked:text-white">Agent</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Profile Photo Upload -->
+                    <div>
+                        <div class="flex justify-center">
+                            <input type="file" id="photo-upload" accept="image/*" class="hidden">
+                            <label for="photo-upload" class="cursor-pointer group relative">
+                                <div id="photo-preview"
+                                    class="w-32 h-32 rounded-full glass-card border-2 border-dashed border-gray-600 flex flex-col items-center justify-center hover:border-brand-blue hover:bg-white/5 transition-all overflow-hidden relative group-hover:shadow-lg group-hover:shadow-blue-500/20">
+                                    <i
+                                        class="fas fa-camera text-3xl text-gray-400 group-hover:text-brand-blue transition-colors mb-2 z-10"></i>
+                                    <span
+                                        class="text-xs text-gray-500 group-hover:text-gray-300 transition-colors z-10">Upload
+                                        Photo</span>
+                                    <div
+                                        class="absolute inset-0 bg-brand-blue/10 scale-0 group-hover:scale-100 rounded-full transition-transform duration-300">
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Full Name -->
+                    <!-- Full Name -->
+                    <div class="relative group">
+                        <i
+                            class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-brand-blue z-10"></i>
+                        <input type="text" id="fullname" name="fullname" required minlength="3"
+                            class="block w-full pl-12 pr-4 pt-5 pb-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue/50 text-white placeholder-transparent peer transition-all input-glass input-floating"
+                            placeholder="Full Name">
+                        <label for="fullname"
+                            class="absolute text-sm text-gray-400 duration-300 transform -translate-y-1 scale-100 top-4 left-12 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:scale-85 peer-focus:-translate-y-4 peer-focus:text-brand-blue peer-not-placeholder-shown:scale-85 peer-not-placeholder-shown:-translate-y-4">
+                            Full Name
+                        </label>
+                    </div>
+
+                    <!-- Email -->
+                    <!-- Email -->
+                    <div class="relative group">
+                        <i
+                            class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-brand-blue z-10"></i>
+                        <input type="email" id="email" name="email" required
+                            class="block w-full pl-12 pr-4 pt-5 pb-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue/50 text-white placeholder-transparent peer transition-all input-glass input-floating"
+                            placeholder="Email Address">
+                        <label for="email"
+                            class="absolute text-sm text-gray-400 duration-300 transform -translate-y-1 scale-100 top-4 left-12 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:scale-85 peer-focus:-translate-y-4 peer-focus:text-brand-blue peer-not-placeholder-shown:scale-85 peer-not-placeholder-shown:-translate-y-4">
+                            Email Address
+                        </label>
+                    </div>
+
+                    <!-- Phone -->
+                    <!-- Phone -->
+                    <div class="relative group">
+                        <i
+                            class="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-brand-blue z-10"></i>
+                        <input type="tel" id="phone" name="phone" required pattern="[0-9]{9,13}"
+                            class="block w-full pl-12 pr-4 pt-5 pb-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue/50 text-white placeholder-transparent peer transition-all input-glass input-floating"
+                            placeholder="Phone Number">
+                        <label for="phone"
+                            class="absolute text-sm text-gray-400 duration-300 transform -translate-y-1 scale-100 top-4 left-12 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:scale-85 peer-focus:-translate-y-4 peer-focus:text-brand-blue peer-not-placeholder-shown:scale-85 peer-not-placeholder-shown:-translate-y-4">
+                            Phone Number
+                        </label>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <!-- Password -->
+                        <div>
+                            <div class="relative group">
+                                <i
+                                    class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-brand-blue z-10"></i>
+                                <input type="password" id="password" name="password" required minlength="8"
+                                    class="block w-full pl-12 pr-12 pt-5 pb-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-blue/50 text-white placeholder-transparent peer transition-all input-glass input-floating"
+                                    placeholder="Password">
+                                <label for="password"
+                                    class="absolute text-sm text-gray-400 duration-300 transform -translate-y-1 scale-100 top-4 left-12 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:scale-85 peer-focus:-translate-y-4 peer-focus:text-brand-blue peer-not-placeholder-shown:scale-85 peer-not-placeholder-shown:-translate-y-4">
+                                    Password
+                                </label>
+
+                                <button type="button"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors cursor-pointer z-20 p-1"
+                                    onclick="togglePassword()">
+                                    <i class="fas fa-eye" id="password-eye"></i>
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2 ml-1 text-right">Minimum 8 characters</p>
+                        </div>
+
+                        <!-- Terms Checkbox -->
+                        <div class="flex items-start">
+                            <div class="relative flex items-start">
+                                <input type="checkbox" id="terms" name="terms" required
+                                    class="peer h-4 w-4 mt-1 rounded border-gray-600 bg-white/5 text-brand-blue focus:ring-brand-blue cursor-pointer accent-brand-blue">
+                                <label for="terms"
+                                    class="ml-3 my-2 text-sm text-gray-400 select-none group-hover:text-white transition-colors">
+                                    I agree to the <a href="#"
+                                        class="text-brand-blue hover:text-blue-400 transition-colors hover:underline">Terms
+                                        of Service</a> and
+                                    <a href="#"
+                                        class="text-brand-blue hover:text-blue-400 transition-colors hover:underline">Privacy
+                                        Policy</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-brand-blue to-blue-600 text-white font-bold py-3.5 px-6 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/20 active:scale-95 my-6">
+                            <span class="flex items-center justify-center gap-2">
+                                <i class="fas fa-user-plus"></i>
+                                Create Account
+                            </span>
+                        </button>
+                </form>
+
+                <!-- Login Link -->
+                <div class="text-center mt-8 pt-6 border-t border-white/10">
+                    <p class="text-sm text-gray-400">
+                        Already have an account?
+                        <a href="login.html"
+                            class="text-brand-blue hover:text-blue-400 font-semibold transition-colors ml-1">Login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/ripple.js"></script>
+    <script type="module" src="../../js/signup.js"></script>
+</body>
+
+</html>

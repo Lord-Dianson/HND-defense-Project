@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HosteLink | Student Housing & Agent Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/index.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { main: '#0f111a', sec: '#161b28', card: '#1e2538' },
+                        brand: { blue: '#3b82f6', cyan: '#00b4db', gold: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="antialiased">
+
+    <canvas id="water-canvas"></canvas>
+
+    <nav class="fixed w-full z-[100] transition-all duration-500 py-4 px-6" id="navbar">
+        <div class="max-w-7xl mx-auto flex items-center justify-between glass-card rounded-full px-8 py-3">
+            <a href="#" class="flex items-center gap-3">
+                <img src="../images/logo.png" alt="HosteLink" class="h-12 w-auto">
+                <span class="font-serif text-2xl font-bold tracking-tight text-white">Hoste<span
+                        class="text-brand-blue">Link</span></span>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="#home" class="nav-link active px-5 py-2 text-sm font-medium">Home<div class="nav-indicator">
+                    </div></a>
+                <a href="#pricing" class="nav-link px-5 py-2 text-sm font-medium text-gray-400">Pricing<div
+                        class="nav-indicator"></div></a>
+                <a href="#agent-portal" class="nav-link px-5 py-2 text-sm font-medium text-brand-gold">Agent Portal<div
+                        class="nav-indicator"></div></a>
+                <a href="#community" class="nav-link px-5 py-2 text-sm font-medium text-gray-400">Community<div
+                        class="nav-indicator"></div></a>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="./auth/login.html"
+                    class="flex items-center gap-2 border border-brand-blue/40 text-brand-blue px-5 py-2 rounded-full text-sm font-medium hover:bg-brand-blue/10 transition-all">
+                    <i class="fa-regular fa-circle-user"></i> Login
+                </a>
+                <a href="./auth/signup.html"
+                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-full text-sm font-bold transition-all shadow-lg shadow-blue-900/20">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </a>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden relative z-[110] w-10 h-10 flex items-center justify-center">
+                <i id="menu-icon" class="fas fa-bars text-xl transition-all"></i>
+                <i id="close-icon" class="fas fa-times text-xl absolute opacity-0 scale-0 transition-all"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-dark-main/98 z-[90] bg-dark-sec flex flex-col items-center justify-center space-y-8 translate-x-full transition-transform duration-500 md:hidden">
+        <a href="#home" class="mobile-link text-3xl font-bold">Home</a>
+        <a href="#pricing" class="mobile-link text-3xl font-bold">Hostels</a>
+        <a href="#agent-portal" class="mobile-link text-3xl font-bold text-brand-gold">Agent Portal</a>
+        <a href="#community" class="mobile-link text-3xl font-bold">Community</a>
+        <a href="./auth/login.html"
+            class="w-64 border border-brand-blue/40 text-brand-blue py-3 rounded-full font-bold flex items-center justify-center gap-3">
+            <i class="fa-regular fa-circle-user"></i> Login
+        </a>
+        <a href="./auth/signup.html"
+            class="w-64 bg-blue-600 py-3 rounded-full font-bold flex items-center justify-center gap-3">
+            <i class="fas fa-user-plus"></i> Sign Up
+        </a>
+    </div>
+
+    <section id="home" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden px-6">
+        <div class="relative z-10 text-center max-w-5xl mx-auto space-y-8">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+                <span class="text-xs font-bold uppercase tracking-widest text-blue-300">The Student-Agent
+                    Ecosystem</span>
+            </div>
+            <h1 class="text-4xl md:text-7xl font-serif font-bold tracking-tight">
+                Connect. <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Earn.</span>
+                Secure. <br>
+                The Modern Way.
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                Whether you're a student seeking a home or an agent scouting the streets, HosteLink is your destination.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
+                <a href="#pricing"
+                    class="bg-blue-600 hover:scale-105 px-10 py-4 rounded-full font-bold transition-all flex items-center gap-3">
+                    Book a Room <i class="fas fa-bed text-sm"></i>
+                </a>
+                <a href="#agent-portal"
+                    class="bg-brand-gold/10 border border-brand-gold/50 text-brand-gold hover:bg-brand-gold hover:text-dark-main px-10 py-4 rounded-full font-bold transition-all flex items-center gap-3">
+                    Earn as an Agent <i class="fas fa-coins text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="agent-portal" class="py-24 relative px-6 bg-transparent">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-4xl font-bold tracking-tight">Turn your discovery into <span
+                            class="text-brand-gold">Income.</span></h2>
+                    <p class="text-gray-400 leading-relaxed">
+                        Are you always on the move? Found a vacant room in Molyko, Bonduma, or Mile 17? Snap it, list
+                        it, and get paid.
+                        Once our admin verifies your upload, you receive a direct compensation.
+                    </p>
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-l-brand-gold backdrop-blur-lg">
+                        <div class="flex items-center gap-4 mb-2">
+                            <i class="fas fa-money-bill-wave text-brand-gold text-2xl float-icon"></i>
+                            <h3 class="font-bold text-xl">500 FCFA Payout</h3>
+                        </div>
+                        <p class="text-sm text-gray-400">Receive 500 FCFA for every valid hostel listing you bring to
+                            the platform. No limits, just discovery.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="glass-card p-8 rounded-3xl text-center agent-card transition-all backdrop-blur-md">
+                        <i class="fas fa-camera-retro text-4xl text-brand-gold mb-4 float-icon"></i>
+                        <h4 class="font-bold mb-2">1. Scout</h4>
+                        <p class="text-xs text-gray-500">Find vacant hostels and get the details/photos.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-3xl text-center agent-card transition-all backdrop-blur-md">
+                        <i class="fas fa-upload text-4xl text-brand-gold mb-4 float-icon"
+                            style="animation-delay: 0.5s;"></i>
+                        <h4 class="font-bold mb-2">2. Upload</h4>
+                        <p class="text-xs text-gray-500">Submit via your Agent Dashboard.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-3xl text-center agent-card transition-all backdrop-blur-md">
+                        <i class="fas fa-user-check text-4xl text-brand-gold mb-4 float-icon"
+                            style="animation-delay: 1s;"></i>
+                        <h4 class="font-bold mb-2">3. Review</h4>
+                        <p class="text-xs text-gray-500">Admin validates the hostel's authenticity.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-3xl text-center agent-card transition-all backdrop-blur-md">
+                        <i class="fas fa-wallet text-4xl text-brand-gold mb-4 float-icon"
+                            style="animation-delay: 1.5s;"></i>
+                        <h4 class="font-bold mb-2">4. Earn</h4>
+                        <p class="text-xs text-gray-500">Funds are sent to your agent wallet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-24 bg-dark-sec/50 relative px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Available Yearly Stays</h2>
+                <div
+                    class="inline-block p-3 rounded-xl bg-yellow-500/5 border border-yellow-500/20 warning-pulse max-w-xl">
+                    <p class="text-yellow-500 text-xs leading-relaxed">
+                        <i class="fas fa-file-invoice-dollar mr-2"></i> <strong>Golden Receipt:</strong>
+                        First download <span class="text-white font-bold underline">FREE</span>.
+                        Others <span class="text-white font-bold">500 FCFA</span>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <div
+                    class="relative rounded-3xl overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-[1.02]">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
+                    </div>
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=800"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            alt="Modern Studio">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-dark-main/90 via-dark-main/40 to-transparent">
+                        </div>
+                        <div
+                            class="absolute top-4 right-4 bg-blue-600/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold">
+                            Popular</div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                        <div class="flex justify-between items-end mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold mb-1">Molyko Heights</h3>
+                                <p class="text-gray-300 text-sm flex items-center gap-1.5">
+                                    <i class="fas fa-map-marker-alt text-blue-400 text-xs"></i> UB Junction
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-3xl font-bold text-blue-400">280k</span>
+                                <p class="text-xs text-gray-400 font-medium">FCFA/Year</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-wifi text-blue-400"></i> WiFi
+                            </span>
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-bolt text-blue-400"></i> Power
+                            </span>
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-shield-halved text-blue-400"></i> Secure
+                            </span>
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-faucet text-blue-400"></i> Water
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="relative rounded-3xl overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-[1.02]">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-emerald-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
+                    </div>
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=800"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            alt="Executive Room">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-dark-main/90 via-dark-main/40 to-transparent">
+                        </div>
+                        <div
+                            class="absolute top-4 right-4 bg-emerald-600/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold">
+                            Spacious</div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                        <div class="flex justify-between items-end mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold mb-1">Executive Single</h3>
+                                <p class="text-gray-300 text-sm flex items-center gap-1.5">
+                                    <i class="fas fa-map-marker-alt text-blue-400 text-xs"></i> Bonduma
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-3xl font-bold text-blue-400">350k</span>
+                                <p class="text-xs text-gray-400 font-medium">FCFA/Year</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-tv text-blue-400"></i> TV Port
+                            </span>
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-sink text-blue-400"></i> Kitchen
+                            </span>
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-door-closed text-blue-400"></i> Closet
+                            </span>
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-motorcycle text-blue-400"></i> Parking
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="relative rounded-3xl overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-[1.02]">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10">
+                    </div>
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&q=80&w=800"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            alt="Classic Apartment">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-dark-main/90 via-dark-main/40 to-transparent">
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                        <div class="flex justify-between items-end mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold mb-1">Classic 1-BR</h3>
+                                <p class="text-gray-300 text-sm flex items-center gap-1.5">
+                                    <i class="fas fa-map-marker-alt text-blue-400 text-xs"></i> Mile 17 Area
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-3xl font-bold text-blue-400">500k</span>
+                                <p class="text-xs text-gray-400 font-medium">FCFA/Year</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-couch text-blue-400"></i> Parlor
+                            </span>
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-shower text-blue-400"></i> Internal
+                            </span>
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-sun text-blue-400"></i> Balcony
+                            </span>
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs text-gray-200 flex items-center gap-1.5">
+                                <i class="fas fa-broom text-blue-400"></i> Cleaning
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="community" class="py-24 px-6 relative bg-transparent">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <h2 class="text-4xl font-bold text-center mb-16">Community Voice</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+                <div
+                    class="glass-card p-8 rounded-3xl hover:-translate-y-2 transition-all duration-500 group cursor-default backdrop-blur-md">
+                    <p class="text-gray-400 italic mb-6">"I paid for my hostel from Kumba. When I arrived in Buea, I
+                        just took a taxi straight to the compound. No agent stress!"</p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://i.pravatar.cc/100?u=1"
+                            class="w-10 h-10 rounded-full grayscale group-hover:grayscale-0 transition-all">
+                        <div>
+                            <h4 class="font-bold text-sm">Achu Divine</h4>
+                            <p class="text-xs text-blue-400">UB Student</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="glass-card p-8 rounded-3xl hover:-translate-y-2 transition-all duration-500 group cursor-default backdrop-blur-md">
+                    <p class="text-gray-400 italic mb-6">"I made 5,000 FCFA in one weekend just by uploading vacant
+                        rooms I saw while walking. Best side-hustle ever."</p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://i.pravatar.cc/100?u=9"
+                            class="w-10 h-10 rounded-full grayscale group-hover:grayscale-0 transition-all">
+                        <div>
+                            <h4 class="font-bold text-sm">Bertrand T.</h4>
+                            <p class="text-xs text-brand-gold">Discovery Agent</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="glass-card p-8 rounded-3xl hover:-translate-y-2 transition-all duration-500 group cursor-default backdrop-blur-md">
+                    <p class="text-gray-400 italic mb-6">"The Golden Receipt system is clear. I downloaded it once,
+                        printed it, and the landlord gave me the keys immediately."</p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://i.pravatar.cc/100?u=4"
+                            class="w-10 h-10 rounded-full grayscale group-hover:grayscale-0 transition-all">
+                        <div>
+                            <h4 class="font-bold text-sm">Lydia E.</h4>
+                            <p class="text-xs text-blue-400">CUIB Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-3xl mx-auto mt-20">
+                <h3 class="text-3xl font-bold text-center mb-12">Common Questions</h3>
+                <div class="space-y-4">
+                    <details class="glass-card rounded-2xl p-2 group transition-all duration-300 open:bg-brand-gold/5">
+                        <summary
+                            class="list-none p-4 flex justify-between items-center cursor-pointer font-semibold text-gray-200">
+                            How and when do I get my 500 FCFA agent fee?
+                            <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            Once you upload a hostel, our Admin team verifies the availability and photos within 48
+                            hours. Once marked "Valid," 500 FCFA is added to your dashboard wallet, which you can
+                            withdraw via MTN or Orange Money.
+                        </div>
+                    </details>
+
+                    <details class="glass-card rounded-2xl p-2 group transition-all duration-300 open:bg-brand-blue/5">
+                        <summary
+                            class="list-none p-4 flex justify-between items-center cursor-pointer font-semibold text-gray-200">
+                            Is booking a room on HosteLink safe?
+                            <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            Yes. We only push listings to the app after they have been physically verified by our team.
+                            Furthermore, your payment is held until your "Golden Receipt" is generated, ensuring
+                            transparency with the landlord.
+                        </div>
+                    </details>
+
+                    <details class="glass-card rounded-2xl p-2 group transition-all duration-300">
+                        <summary
+                            class="list-none p-4 flex justify-between items-center cursor-pointer font-semibold text-gray-200">
+                            What if an Agent uploads fake hostel info?
+                            <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            HosteLink has a strict verification policy. If an agent submits fake information, the post
+                            is rejected, no compensation is paid, and repeated attempts lead to a permanent ban of the
+                            agent account.
+                        </div>
+                    </details>
+
+                    <details class="glass-card rounded-2xl p-2 group transition-all duration-300">
+                        <summary
+                            class="list-none p-4 flex justify-between items-center cursor-pointer font-semibold text-gray-200">
+                            Why do I have to pay 500 FCFA for a second receipt?
+                            <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            The first download is always free to ensure you get your proof of payment. We charge a small
+                            maintenance fee for subsequent downloads to support the secure cloud storage and
+                            verification services of the platform.
+                        </div>
+                    </details>
+
+                    <details class="glass-card rounded-2xl p-2 group transition-all duration-300">
+                        <summary
+                            class="list-none p-4 flex justify-between items-center cursor-pointer font-semibold text-gray-200">
+                            Do I need to be in Buea to use the app?
+                            <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="px-4 pb-4 text-sm text-gray-400 leading-relaxed">
+                            Not at all! Students can book from anywhere in the country. However, our Discovery Agents
+                            are currently active in Buea (Molyko, Bonduma, Mile 17, etc.) to ensure local listings are
+                            fresh.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark-main border-t border-white/5 pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="space-y-6">
+                    <a href="#" class="flex items-center gap-2 mb-2"><img src="images/logo.png" alt="HosteLink"
+                            class="h-8 w-auto"></a>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        The definitive housing platform for students in Cameroon. Join our discovery agent network
+                        today.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-gray-400 hover:text-white hover:bg-brand-blue transition-all"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-gray-400 hover:text-white hover:bg-brand-blue transition-all"><i
+                                class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 uppercase text-xs tracking-widest text-blue-400">Quick Navigation</h4>
+                    <ul class="space-y-4 text-gray-400 text-sm">
+                        <li><a href="#home" class="hover:text-white transition-colors">Find a Room</a></li>
+                        <li><a href="#agent-portal" class="hover:text-brand-gold transition-colors">Agent Portal</a>
+                        </li>
+                        <li><a href="#pricing" class="hover:text-white transition-colors">Pricing Structure</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 uppercase text-xs tracking-widest text-blue-400">Support</h4>
+                    <ul class="space-y-4 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">Golden Receipt Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Agent Compensation</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 uppercase text-xs tracking-widest text-blue-400">Contact</h4>
+                    <p class="text-gray-400 text-sm mb-4">Molyko, Buea, Cameroon</p>
+                    <p class="text-white font-bold text-sm">+237 6XX XXX XXX</p>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center pt-10 border-t border-white/5 gap-4">
+                <p class="text-gray-500 text-xs text-center md:text-left">© 2025 HosteLink Cameroon. Built for students
+                    and earners.</p>
+                <div class="flex gap-6">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/MTN_Logo.svg"
+                        class="h-6 grayscale opacity-30 hover:opacity-100 transition-all">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Orange_logo.svg"
+                        class="h-6 grayscale opacity-30 hover:opacity-100 transition-all">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Nav Logic
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                navLinks.forEach(l => l.classList.remove('active', 'text-white'));
+                navLinks.forEach(l => l.classList.add('text-gray-400'));
+                this.classList.add('active', 'text-white');
+                this.classList.remove('text-gray-400');
+            });
+        });
+
+        // Mobile Menu
+        const menuBtn = document.getElementById('menu-toggle');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            const isClosed = mobileMenu.classList.toggle('translate-x-full');
+            if (!isClosed) {
+                menuIcon.classList.add('opacity-0', 'scale-0');
+                closeIcon.classList.remove('opacity-0', 'scale-0');
+            } else {
+                menuIcon.classList.remove('opacity-0', 'scale-0');
+                closeIcon.classList.add('opacity-0', 'scale-0');
+            }
+        });
+
+        // Close mobile menu when clicking a link (except login/signup)
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full'); // Close menu
+                menuIcon.classList.remove('opacity-0', 'scale-0'); // Show hamburger
+                closeIcon.classList.add('opacity-0', 'scale-0'); // Hide close icon
+            });
+        });
+
+    </script>
+    <script src="../js/ripple.js"></script>
+</body>
+
+</html>
