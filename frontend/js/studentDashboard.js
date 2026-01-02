@@ -1,14 +1,16 @@
-import { getCurrentAccount, isSessionValid, clearSession } from './utils.js';
+import { getStudentInfo, isSessionValid, clearSession } from './utils.js';
 import { showToast } from './toast.js';
 // We assume axios is available globally via CDN in the HTML files
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // 1. Check Authentication
-        const user = await getCurrentAccount();
-        // Token is in DB. Relies on user presence.
+        // 1. Check Authentication specifically for Student
+        console.log('[Student Dashboard] Checking authentication...');
+        const user = await getStudentInfo(); // Use specific student preference
+        console.log('[Student Dashboard] Current student:', user ? `${user.name} (ID: ${user.id})` : 'null');
 
         if (!user) {
+            console.warn('No student info found, redirecting to notAuthorized.');
             window.location.href = '../general/notAuthorized.html';
             return;
         }
@@ -25,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Verify correct role
         if (user.role !== 'student') {
+            console.warn(`[Student Dashboard] Wrong role detected: ${user.role}, redirecting...`);
             showToast('Unauthorized access. Redirecting...', 'error');
             setTimeout(() => {
                 if (user.role === 'agent') window.location.href = '../agent/profile.html';
@@ -33,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        console.log('Student Dashboard Loaded for:', user.name);
+        console.log('[Student Dashboard] Role verified, loading dashboard for:', user.name);
 
         // Fetch Token from Backend
         let token = null;
@@ -110,22 +113,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // Fetch Payment History
+// Fetch Payment History
 async function fetchPaymentHistory(userId, token) {
     const container = document.getElementById('payment-history-container');
     if (!container) return; // Not on history page or element missing
 
     try {
-        // Note: The user updated index.php to use /api/payments/history
-        // The backend `getPaymentHistory` likely uses the token to identify the user, 
-        // OR we pass the user ID. 
-        // Let's assume the standard token-based auth first.
-
-        const response = await axios.get(`http://localhost:3000/api/payments/history`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
+        // Updated to POST as per backend change in index.php
+        const response = await axios.post(`http://localhost:3000/api/payments/history`,
+            { studentID: userId },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             }
-        });
+        );
 
         if (response.data.success && response.data.payments) {
             renderPaymentHistory(response.data.payments, container);

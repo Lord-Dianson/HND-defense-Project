@@ -118,6 +118,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 await saveAccount(userData);
                 await setCurrentAccount(userData.id);
+
+                // Store strictly in agent_info or user_info as requested
+                if (userData.role === 'agent') {
+                    await setPreference('agent_info', JSON.stringify(userData));
+                } else {
+                    await setPreference('user_info', JSON.stringify(userData));
+                }
+
                 await setLoginTimestamp(userData.id);
 
                 // Show success

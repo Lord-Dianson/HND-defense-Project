@@ -388,13 +388,31 @@
                 btn.textContent = '✓ Downloaded!';
                 btn.style.backgroundColor = '#10b981';
 
-                // Reset button after 2 seconds
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.textContent = originalText;
-                    btn.style.cursor = 'pointer';
-                    btn.style.opacity = '1';
-                    btn.style.backgroundColor = '#fbbf24';
+                // Redirect to profile page after 2 seconds based on user role
+                setTimeout(async () => {
+                    try {
+                        const userStr = sessionStorage.getItem('user_info');
+                        const user = userStr ? JSON.parse(userStr) : {};
+                        const role = user.role || 'student';
+                        
+                        let profileUrl = '../dashboard/profile.html'; // default for student
+                        
+                        if (role === 'agent') {
+                            profileUrl = '../agent/dashboard.html';
+                        } else if (role === 'admin' || role === 'super_admin') {
+                            profileUrl = '../admin/dashboard.html';
+                        }
+                        
+                        window.location.href = profileUrl;
+                    } catch (e) {
+                        console.error('Error redirecting:', e);
+                        // Reset button if redirect fails
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                        btn.style.cursor = 'pointer';
+                        btn.style.opacity = '1';
+                        btn.style.backgroundColor = '#fbbf24';
+                    }
                 }, 2000);
             }).catch(err => {
                 console.error('Error downloading PDF:', err);

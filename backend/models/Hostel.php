@@ -12,6 +12,23 @@ class Hostel extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'hostelID', 'name', 'location', 'image', 'capacity','roomsLeft', 'price', 'facilities','description','status', 'agentID', 'landlordPhone','verified','createdAt', 'updatedAt'
+        'hostelID', 'name', 'location', 'image', 'capacity', 'roomsLeft',
+        'price', 'facilities', 'roomType', 'description', 'status', 
+        'agentID', 'landlordPhone', 'verified', 'createdAt', 'updatedAt'
     ];
+
+    public function agent()
+    {
+        return $this->belongsTo(User::class, 'agentID', 'ID');
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'hostelID', 'hostelID');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'hostelID', 'hostelID');
+    }
 }

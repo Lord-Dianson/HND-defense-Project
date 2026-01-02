@@ -40,6 +40,18 @@ try {
         session_start();
     }
 
+    // 5.5. Add CORS Headers
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+    header('Access-Control-Max-Age: 86400');
+    
+    // Handle preflight OPTIONS requests
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(200);
+        exit;
+    }
+
     // 6. Setup Slim App
     $app = AppFactory::create();
 
@@ -105,7 +117,9 @@ try {
     $app->get('/api/agent/payments', [$agentControllers, 'listPaymentHistory']);
 
     // Hostel Routes
+    
     $app->get('/api/hostels', [$hostelControllers, 'getAllHostels']);
+    $app->post('/api/add-hostels', [$hostelControllers, 'createHostel']);
     $app->post('/api/hostels/by-id', [$hostelControllers, 'getHostelByID']);
     $app->put('/api/hostels/{id}', [$hostelControllers, 'updateHosteDetails']);
     $app->delete('/api/hostels/{id}', [$hostelControllers, 'deleteHostel']);
@@ -113,6 +127,7 @@ try {
     $app->get('/api/bookings', [$hostelControllers, 'getBookingHistoryById']);
     $app->put('/api/bookings/{id}', [$hostelControllers, 'updateBookingDetails']);
     $app->delete('/api/bookings/{id}', [$hostelControllers, 'cancelBooking']);
+    $app->post('/api/bookings/receipt', [$hostelControllers, 'getReceiptUrl']);
 
     // Payment Routes
     $app->post('/api/receipts/generate', [$paymentControllers, 'generatePDFReciept']);
@@ -121,7 +136,8 @@ try {
     // User Routes
     $app->get('/api/users', [$userControllers, 'getAllUsers']);
     $app->post('/api/users/by-id', [$userControllers, 'getUserById']);
-    $app->get('/api/payments/history', [$userControllers, 'getPaymentHistory']);
+    // Use POST so the controller can read `userID` from the request body and use Authorization header
+    $app->post('/api/payments/history', [$userControllers, 'getPaymentHistory']);
 
     // Run the app
     $app->run();

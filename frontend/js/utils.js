@@ -100,11 +100,41 @@ export async function getAccount(userId) {
 export async function getCurrentAccount() {
     try {
         const currentAccountId = await getPreference(CURRENT_ACCOUNT_KEY);
+        console.log('[getCurrentAccount] current_account_id:', currentAccountId);
+
         if (!currentAccountId) return null;
 
-        return await getAccount(currentAccountId);
+        const account = await getAccount(currentAccountId);
+        console.log('[getCurrentAccount] Retrieved account:', account ? `${account.name} (ID: ${account.id})` : 'null');
+        return account;
     } catch (error) {
         console.error('Error getting current account:', error);
+        return null;
+    }
+}
+
+/**
+ * Get stored agent info specifically
+ */
+export async function getAgentInfo() {
+    try {
+        const agentData = await getPreference('agent_info');
+        return agentData ? JSON.parse(agentData) : null;
+    } catch (error) {
+        console.error('Error getting agent info:', error);
+        return null;
+    }
+}
+
+/**
+ * Get stored student info specifically
+ */
+export async function getStudentInfo() {
+    try {
+        const studentData = await getPreference('user_info');
+        return studentData ? JSON.parse(studentData) : null;
+    } catch (error) {
+        console.error('Error getting student info:', error);
         return null;
     }
 }
@@ -121,7 +151,7 @@ export async function setCurrentAccount(userId) {
         }
 
         await setPreference(CURRENT_ACCOUNT_KEY, userId.toString());
-        console.log(`Current account set to: ${userId}`);
+        console.log(`[setCurrentAccount] Current account set to: ${userId}`);
     } catch (error) {
         console.error('Error setting current account:', error);
     }
@@ -147,6 +177,24 @@ export async function getAllAccounts() {
     } catch (error) {
         console.error('Error getting all accounts:', error);
         return [];
+    }
+}
+
+/**
+ * Get the most recent account (top of the list)
+ * @returns {Object|null} Most recent account object or null
+ */
+export async function getMostRecentAccount() {
+    try {
+        const accountsList = await getAccountsList();
+        if (accountsList.length === 0) return null;
+
+        // First account in list is the most recent
+        const mostRecentId = accountsList[0];
+        return await getAccount(mostRecentId);
+    } catch (error) {
+        console.error('Error getting most recent account:', error);
+        return null;
     }
 }
 

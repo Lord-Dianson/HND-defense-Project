@@ -95,9 +95,24 @@ class userController
                 $res->getBody()->write(json_encode(['success' => false, 'message' => 'Forbidden']));
                 return $res->withStatus(403)->withHeader('Content-Type', 'application/json');
             }
+            // Eager load related hostel to provide human-friendly payment info
+            $payments = Payment::where('studentID', $userID)->with('hostel')->get();
 
-            $payments = Payment::where('studentID', $userID)->get();
-            $res->getBody()->write(json_encode(['success' => true, 'count' => count($payments), 'payments' => $payments]));
+            // Map payments to include hostel name/location, date, amount and status
+            $formatted = $payments->map(function ($p) {
+                return [
+                    'paymentID' => $p->paymentID,
+                    'hostelID' => $p->hostelID,
+                    'hostelName' => $p->hostel ? ($p->hostel->name ?? null) : null,
+                    'hostelLocation' => $p->hostel ? ($p->hostel->location ?? null) : null,
+                    'amount' => $p->amount,
+                    'status' => $p->status,
+                    'paidAt' => $p->paidAt ?? $p->createdAt,
+                    'reference' => $p->reference ?? null,
+                ];
+            });
+
+            $res->getBody()->write(json_encode(['success' => true, 'count' => count($formatted), 'payments' => $formatted]));
             return $res->withStatus(200)->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
             $res->getBody()->write(json_encode(['success' => false, 'message' => $e->getMessage()]));

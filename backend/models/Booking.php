@@ -12,6 +12,22 @@ class Booking extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'bookingID', 'studentID', 'hostelID', 'landlordID', 'paymentID', 'agentID', 'checkIn', 'checkOut', 'receipt', 'createdAt', 'updatedAt'
+        'bookingID', 'studentID', 'hostelID', 'landlordPhone', 'paymentID', 
+        'checkOut', 'receipt', 'createdAt', 'updatedAt'
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(User::class, 'studentID', 'ID');
+    }
+
+    public function hostel()
+    {
+        return $this->belongsTo(Hostel::class, 'hostelID', 'hostelID');
+    }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'paymentID', 'paymentID');
+    }
 }

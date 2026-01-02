@@ -1,16 +1,17 @@
-import { getCurrentAccount, saveAccount, isSessionValid, clearSession } from './utils.js';
+import { getAgentInfo, saveAccount, isSessionValid, clearSession } from './utils.js';
 import { showToast } from './toast.js';
 // We assume axios is available globally via CDN in the HTML files
 
 const accountBalance = document.querySelector('.account-balance');
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // 1. Check Authentication
-        const user = await getCurrentAccount();
-        // Token is in DB. Relies on user presence.
+        // 1. Check Authentication specifically for Agent
+        console.log('[Agent Dashboard] Checking authentication...');
+        const user = await getAgentInfo();
+        console.log('[Agent Dashboard] Current agent:', user ? `${user.name} (ID: ${user.id})` : 'null');
 
         if (!user) {
-            console.warn('No user info found, redirecting to notAuthorized.');
+            console.warn('No agent info found, redirecting to notAuthorized.');
             window.location.href = '../general/notAuthorized.html';
             return;
         }
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Verify correct role
         if (user.role !== 'agent') {
+            console.warn(`[Agent Dashboard] Wrong role detected: ${user.role}, redirecting...`);
             showToast('Unauthorized access. Redirecting...', 'error');
             setTimeout(() => {
                 if (user.role === 'student') window.location.href = '../student/profile.html';
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        console.log('Agent Dashboard Loaded for:', user.name);
+        console.log('[Agent Dashboard] Role verified, loading dashboard for:', user.name);
 
         // Fetch Token from Backend
         let token = null;
@@ -124,8 +126,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (currentPage === 'history.html') {
             fetchAgentListings(token);
-        } else if (currentPage === 'uploads.html') {
-            setupUploadForm(token);
         } else if (currentPage === 'profile.html' || currentPage === '') {
             fetchActiveListingsCount(token);
         }
@@ -168,15 +168,14 @@ async function fetchActiveListingsCount(token) {
 }
 
 // Fetch Agent Listings (History)
+let allAgentHostels = []; // Store all hostels for filtering
+let currentFilter = 'all';
+
 async function fetchAgentListings(token) {
-    const listContainer = document.querySelector('.space-y-3'); // Container for list items
+    const listContainer = document.getElementById('listings-container');
     if (!listContainer) return;
 
     try {
-        // Clear placeholder items if we are fetching real data (or keep them as skeleton if desired, but better to clear)
-        // For now, let's append or replace. The user said "usage of info only, rest from db". 
-        // We really should clear the hardcoded items first.
-
         const response = await axios.get('http://localhost:3000/api/agent/list-hostels', {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -184,74 +183,100 @@ async function fetchAgentListings(token) {
             }
         });
 
-        if (response.data.success && response.data.hostels && response.data.hostels.length > 0) {
-            listContainer.innerHTML = ''; // Clear hardcoded
-            renderHostels(response.data.hostels, listContainer);
+        if (response.data.success && response.data.hostels) {
+            allAgentHostels = response.data.hostels;
+            renderFilteredHostels(listContainer);
+            setupFilterTabs(listContainer);
         } else {
-            // If empty, maybe show empty state
-            // listContainer.innerHTML = '<p class="text-center text-gray-500 py-10">No listings found.</p>';
+            listContainer.innerHTML = '<p class="text-center text-gray-500 py-10">No listings found.</p>';
         }
     } catch (error) {
         console.error('Error fetching listings:', error);
+        listContainer.innerHTML = '<p class="text-center text-red-400 py-10">Error loading listings.</p>';
     }
 }
 
-function renderHostels(hostels, container) {
-    container.innerHTML = hostels.map(hostel => `
-        <div class="history-item group p-3 rounded-xl mb-3">
-            <img src="${hostel.mainImage || 'https://via.placeholder.com/200'}"
-                class="w-16 h-16 rounded-lg object-cover mr-4 border border-white/10 group-hover:scale-105 transition-transform">
-            <div class="flex-1 min-w-0">
-                <div class="flex justify-between items-start mb-1">
-                    <h3 class="text-base font-bold text-white truncate">${hostel.name}</h3>
-                    <span class="status-badge status-${hostel.status.toLowerCase()} text-[10px] px-2 py-0.5">${hostel.status}</span>
-                </div>
-                <p class="text-gray-400 text-xs mb-1"><i class="fas fa-map-marker-alt text-brand-gold mr-1"></i>
-                    ${hostel.location}</p>
-                <div class="flex items-center gap-3 text-[10px] text-gray-500">
-                    <span><i class="fas fa-eye mr-1"></i> ${hostel.views || 0} Views</span>
-                    <span><i class="fas fa-calendar mr-1"></i> ${new Date(hostel.createdAt).toLocaleDateString()}</span>
-                </div>
-            </div>
-            <div class="flex flex-col gap-1.5 ml-3">
-                <button class="text-brand-gold bg-brand-gold/10 hover:bg-brand-gold hover:text-dark-main p-1.5 rounded-md transition-colors text-xs"><i class="fas fa-pen"></i></button>
-            </div>
-        </div>
-    `).join('');
-}
+function setupFilterTabs(container) {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update active state
+            filterBtns.forEach(b => {
+                b.classList.remove('active', 'bg-brand-gold', 'text-dark-main');
+                b.classList.add('bg-white/5', 'text-gray-400');
+            });
+            btn.classList.add('active', 'bg-brand-gold', 'text-dark-main');
+            btn.classList.remove('bg-white/5', 'text-gray-400');
 
-// Setup Upload Form
-function setupUploadForm(token) {
-    const form = document.querySelector('form');
-    if (!form) return;
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        // Use FormData for file uploads if needed, or JSON if just text. 
-        // For now, let's gather basic inputs.
-        // NOTE: Real implementation needs handling of file uploads/cloudinary etc. 
-        // Assuming simple JSON for the moment based on previous interactions, or we stub it.
-
-        const btn = form.querySelector('button[type="submit"]');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
-        btn.disabled = true;
-
-        try {
-            // Gather data (simplified)
-            // Implementation details "instructed later", this is just the detailed setup phase.
-            showToast('Submission logic to be implemented with Cloudinary integration.', 'info');
-
-        } catch (error) {
-            console.error(error);
-            showToast('Error submitting listing.', 'error');
-        } finally {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }
+            // Update filter and re-render
+            currentFilter = btn.dataset.filter;
+            renderFilteredHostels(container);
+        });
     });
 }
+
+function renderFilteredHostels(container) {
+    let filteredHostels = allAgentHostels;
+
+    // Apply filter based on verified status
+    if (currentFilter === 'active') {
+        filteredHostels = allAgentHostels.filter(h => h.verified == 1);
+    } else if (currentFilter === 'pending') {
+        filteredHostels = allAgentHostels.filter(h => h.verified == 0);
+    }
+    // 'all' shows all hostels (verified = 0 or 1)
+
+    if (filteredHostels.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-10 text-gray-400">
+                <i class="fas fa-folder-open text-3xl mb-3"></i>
+                <p>No ${currentFilter === 'all' ? '' : currentFilter + ' '}listings found.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filteredHostels.map(hostel => {
+        const isVerified = hostel.verified == 1;
+        const badgeClass = isVerified
+            ? 'bg-green-500/20 text-green-400 border-green-500/30'
+            : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+        const badgeText = isVerified ? 'Verified' : 'Pending';
+        const badgeIcon = isVerified ? 'fa-check-circle' : 'fa-clock';
+
+        const imageHtml = hostel.image
+            ? `<img src="${hostel.image}" class="w-16 h-16 rounded-lg object-cover mr-4 border border-white/10 group-hover:scale-105 transition-transform" alt="${hostel.name}">`
+            : `<div class="w-16 h-16 rounded-lg bg-white/5 flex items-center justify-center mr-4 border border-white/10 text-gray-500"><i class="fas fa-image text-lg"></i></div>`;
+
+        return `
+            <div class="history-item group p-3 rounded-xl mb-3">
+                ${imageHtml}
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start mb-1">
+                        <h3 class="text-base font-bold text-white truncate">${hostel.name}</h3>
+                        <span class="${badgeClass} text-[10px] px-2 py-0.5 rounded-full border flex items-center gap-1">
+                            <i class="fas ${badgeIcon}"></i> ${badgeText}
+                        </span>
+                    </div>
+                    <p class="text-gray-400 text-xs mb-1"><i class="fas fa-map-marker-alt text-brand-gold mr-1"></i> ${hostel.location}</p>
+                    <div class="flex items-center gap-3 text-[10px] text-gray-500">
+                        <span><i class="fas fa-door-open mr-1"></i> ${hostel.roomType || 'Standard'}</span>
+                        <span><i class="fas fa-calendar mr-1"></i> ${new Date(hostel.createdAt).toLocaleDateString()}</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1.5 ml-3">
+                    ${isVerified
+                ? `<button class="text-brand-gold bg-brand-gold/10 hover:bg-brand-gold hover:text-dark-main p-1.5 rounded-md transition-colors text-xs" title="Edit"><i class="fas fa-pen"></i></button>
+                           <button class="text-red-400 bg-red-400/10 hover:bg-red-400 hover:text-white p-1.5 rounded-md transition-colors text-xs" title="Delete"><i class="fas fa-trash"></i></button>`
+                : `<button class="text-gray-400 bg-white/5 cursor-not-allowed p-1.5 rounded-md text-xs" title="Pending Approval"><i class="fas fa-lock"></i></button>`
+            }
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Upload form handling is now done in uploads.js
 
 // Use window scope for HTML onclick handlers
 const saveCancelBtns = document.getElementById('save-cancel-btns');

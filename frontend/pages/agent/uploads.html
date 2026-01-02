@@ -86,7 +86,7 @@
                         class="text-gradient-gold">Listing</span></h1>
             </header>
 
-            <form class="space-y-6 animate-fade-in-up delay-100">
+            <form id="upload-form" class="space-y-6 animate-fade-in-up delay-100">
 
                 <!-- Section 1: Basic Info -->
                 <div class="glass-card rounded-3xl p-6 border border-white/5">
@@ -99,47 +99,91 @@
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 ml-1">Hostel
                                 Name</label>
-                            <input type="text" placeholder="e.g. Molyko Heights" class="agent-input py-2.5 text-sm">
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i
+                                        class="fas fa-building text-gray-500 group-focus-within:text-brand-blue transition-colors"></i>
+                                </div>
+                                <input type="text" id="hostel-name" required placeholder="e.g. Molyko Heights"
+                                    class="w-full pl-11 pr-4 py-3 bg-dark-sec border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all backdrop-blur-xl text-sm">
+                            </div>
                         </div>
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 ml-1">Phone
                                 Number (Owner)</label>
-                            <input type="tel" placeholder="+237 6XX XXX XXX" class="agent-input py-2.5 text-sm">
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i
+                                        class="fas fa-phone text-gray-500 group-focus-within:text-brand-blue transition-colors"></i>
+                                </div>
+                                <input type="tel" id="owner-phone" required placeholder="+237 6XX XXX XXX"
+                                    class="w-full pl-11 pr-4 py-3 bg-dark-sec border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all backdrop-blur-xl text-sm">
+                            </div>
                         </div>
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 ml-1">Price
                                 (FCFA/Year)</label>
-                            <input type="number" placeholder="350,000" class="agent-input py-2.5 text-sm">
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i
+                                        class="fas fa-tag text-gray-500 group-focus-within:text-brand-blue transition-colors"></i>
+                                </div>
+                                <input type="number" id="hostel-price" required placeholder="350,000"
+                                    class="w-full pl-11 pr-4 py-3 bg-dark-sec border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all backdrop-blur-xl text-sm">
+                            </div>
                         </div>
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 ml-1">Location</label>
-                            <select class="agent-input appearance-none py-2.5 text-sm">
-                                <option class="bg-dark-card">Select Location</option>
-                                <option class="bg-dark-card">Molyko</option>
-                                <option class="bg-dark-card">Bonduma</option>
-                                <option class="bg-dark-card">Mile 17</option>
-                                <option class="bg-dark-card">UB Junction</option>
-                            </select>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i
+                                        class="fas fa-map-marker-alt text-gray-500 group-focus-within:text-brand-blue transition-colors"></i>
+                                </div>
+                                <input type="text" id="hostel-location" required
+                                    class="w-full pl-11 pr-4 py-3 bg-dark-sec border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all backdrop-blur-xl text-sm"
+                                    placeholder="Enter hostel location">
+                            </div>
                         </div>
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 ml-1">Room
                                 Type</label>
-                            <select class="agent-input appearance-none py-2.5 text-sm">
-                                <option class="bg-dark-card">Single Room</option>
-                                <option class="bg-dark-card">Studio</option>
-                                <option class="bg-dark-card">Apartment (1 Bedroom)</option>
-                                <option class="bg-dark-card">Apartment (2 Bedroom)</option>
-                            </select>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i
+                                        class="fas fa-door-open text-gray-500 group-focus-within:text-brand-blue transition-colors"></i>
+                                </div>
+                                <select id="room-type" required
+                                    class="w-full pl-11 pr-4 py-3 bg-dark-sec border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all appearance-none cursor-pointer backdrop-blur-xl text-sm">
+                                    <option value="" disabled selected>Select Room Type</option>
+                                    <option value="Studio">Studio</option>
+                                    <option value="Single Room only">Single Room only</option>
+                                    <option value="Single Room toilet">Single Room toilet</option>
+                                    <option value="Single Room kitchen">Single Room kitchen</option>
+                                    <option value="Single Room toilet and kitchen">Single Room toilet and kitchen
+                                    </option>
+                                    <option value="Apartment (1 Bedroom)">Apartment (1 Bedroom)</option>
+                                    <option value="Apartment (2 Bedroom)">Apartment (2 Bedroom)</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-span-2">
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 ml-1">Description</label>
-                            <textarea rows="3" placeholder="Describe the key features..."
-                                class="agent-input resize-none py-2 text-sm"></textarea>
+                            <div class="relative group">
+                                <div class="absolute top-3 left-0 pl-4 flex items-start pointer-events-none">
+                                    <i
+                                        class="fas fa-align-left text-gray-500 group-focus-within:text-brand-blue transition-colors"></i>
+                                </div>
+                                <textarea id="hostel-desc" required rows="3" placeholder="Describe the key features..."
+                                    class="w-full pl-11 pr-4 py-3 bg-dark-sec border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50 transition-all backdrop-blur-xl text-sm resize-none"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -266,18 +310,27 @@
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <span class="bg-brand-gold/20 text-brand-gold px-2 py-0.5 rounded text-xs">03</span> Photos
                     </h3>
-                    <div class="upload-zone group min-h-[200px]" id="drop-zone">
-                        <i class="fas fa-cloud-upload-alt text-2xl group-hover:text-brand-gold"></i>
-                        <h4 class="text-lg font-bold mb-1">Drag Photos Here</h4>
-                        <button type="button"
-                            class="bg-white/10 hover:bg-white/20 text-white px-4 py-1.5 rounded-lg text-xs font-medium transition-all mt-2">Browse
-                            Files</button>
+                    <div class="upload-zone group min-h-[200px]" id="drop-zone"
+                        onclick="document.getElementById('hostel-image').click()">
+                        <input type="file" id="hostel-image" accept="image/*" class="hidden" required>
+                        <div id="preview-container" class="hidden w-full h-full absolute inset-0 bg-dark-main">
+                            <img id="image-preview" src="" class="w-full h-full object-cover rounded-xl" alt="Preview">
+                            <button type="button" id="remove-image"
+                                class="absolute top-2 right-2 bg-red-500/80 text-white p-2 rounded-full hover:bg-red-600 transition-colors z-10"><i
+                                    class="fas fa-times"></i></button>
+                        </div>
+                        <div id="upload-placeholder" class="flex flex-col items-center justify-center h-full py-10">
+                            <i
+                                class="fas fa-cloud-upload-alt text-2xl group-hover:text-brand-gold mb-2 transition-colors"></i>
+                            <h4 class="text-lg font-bold mb-1">Click to Upload Photo</h4>
+                            <span class="text-xs text-gray-500">Supports JPG, PNG</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="flex justify-end pt-4">
                     <button type="submit"
-                        class="bg-gradient-to-r from-brand-gold to-yellow-500 text-dark-main font-bold py-3 px-8 rounded-xl hover:shadow-lg hover:shadow-yellow-500/20 hover:-translate-y-1 transition-all flex items-center gap-2 text-sm">
+                        class="bg-gradient-to-r from-brand-gold to-yellow-500 text-dark-main font-bold py-3 px-8 rounded-xl hover:shadow-lg hover:shadow-yellow-500/20 hover:-translate-y-1 transition-all flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
                         <i class="fas fa-rocket"></i> Publish
                     </button>
                 </div>
@@ -325,7 +378,7 @@
     </script>
     <script src="../../js/ripple.js"></script>
     <script type="module" src="../../js/agentDashboard.js"></script>
-    </script>
+    <script type="module" src="../../js/uploads.js"></script>
 </body>
 
 </html>

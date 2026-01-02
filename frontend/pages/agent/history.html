@@ -88,94 +88,18 @@
                             class="text-gradient-gold">Listings</span></h1>
                     <p class="text-gray-400 text-sm font-light">Manage your hostel properties and view status.</p>
                 </div>
-                <div class="flex gap-2">
-                    <button
-                        class="bg-brand-gold text-dark-main font-bold py-1.5 px-3 rounded-lg text-xs">Active</button>
-                    <button
-                        class="bg-white/5 text-gray-400 hover:text-white py-1.5 px-3 rounded-lg text-xs transition-colors">Pending</button>
-                    <button
-                        class="bg-white/5 text-gray-400 hover:text-white py-1.5 px-3 rounded-lg text-xs transition-colors">Archived</button>
+                <div class="flex gap-2" id="filter-tabs">
+                    <button data-filter="all"
+                        class="filter-btn active bg-brand-gold text-dark-main font-bold py-1.5 px-3 rounded-lg text-xs">All</button>
+                    <button data-filter="active"
+                        class="filter-btn bg-white/5 text-gray-400 hover:text-white py-1.5 px-3 rounded-lg text-xs transition-colors">Active</button>
+                    <button data-filter="pending"
+                        class="filter-btn bg-white/5 text-gray-400 hover:text-white py-1.5 px-3 rounded-lg text-xs transition-colors">Pending</button>
                 </div>
             </header>
 
-            <div class="space-y-3 animate-fade-in-up delay-100">
-
-                <!-- Listing Item 1 -->
-                <div class="history-item group p-3 rounded-xl mb-3">
-                    <img src="https://images.unsplash.com/photo-1555854743-e3c2f6a5fc1a?auto=format&fit=crop&q=80&w=200"
-                        class="w-16 h-16 rounded-lg object-cover mr-4 border border-white/10 group-hover:scale-105 transition-transform">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-start mb-1">
-                            <h3 class="text-base font-bold text-white truncate">Sunny Side Apartments</h3>
-                            <span class="status-badge status-active text-[10px] px-2 py-0.5">Active</span>
-                        </div>
-                        <p class="text-gray-400 text-xs mb-1"><i class="fas fa-map-marker-alt text-brand-gold mr-1"></i>
-                            Molyko, Buea</p>
-                        <div class="flex items-center gap-3 text-[10px] text-gray-500">
-                            <span><i class="fas fa-eye mr-1"></i> 450 Views</span>
-                            <span><i class="fas fa-calendar mr-1"></i> 2d ago</span>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-1.5 ml-3">
-                        <button
-                            class="text-brand-gold bg-brand-gold/10 hover:bg-brand-gold hover:text-dark-main p-1.5 rounded-md transition-colors text-xs"
-                            title="Edit"><i class="fas fa-pen"></i></button>
-                        <button
-                            class="text-red-400 bg-red-400/10 hover:bg-red-400 hover:text-white p-1.5 rounded-md transition-colors text-xs"
-                            title="Delete"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-
-                <!-- Listing Item 2 -->
-                <div class="history-item group p-3 rounded-xl mb-3">
-                    <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=200"
-                        class="w-16 h-16 rounded-lg object-cover mr-4 border border-white/10 group-hover:scale-105 transition-transform">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-start mb-1">
-                            <h3 class="text-base font-bold text-white truncate">Executive Suite</h3>
-                            <span class="status-badge status-active text-[10px] px-2 py-0.5">Active</span>
-                        </div>
-                        <p class="text-gray-400 text-xs mb-1"><i class="fas fa-map-marker-alt text-brand-gold mr-1"></i>
-                            Bonduma, Buea</p>
-                        <div class="flex items-center gap-3 text-[10px] text-gray-500">
-                            <span><i class="fas fa-eye mr-1"></i> 1,200 Views</span>
-                            <span><i class="fas fa-calendar mr-1"></i> 1w ago</span>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-1.5 ml-3">
-                        <button
-                            class="text-brand-gold bg-brand-gold/10 hover:bg-brand-gold hover:text-dark-main p-1.5 rounded-md transition-colors text-xs"><i
-                                class="fas fa-pen"></i></button>
-                        <button
-                            class="text-red-400 bg-red-400/10 hover:bg-red-400 hover:text-white p-1.5 rounded-md transition-colors text-xs"><i
-                                class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-
-                <!-- Listing Item 3 -->
-                <div class="history-item group p-3 rounded-xl mb-3">
-                    <div
-                        class="w-16 h-16 rounded-lg bg-white/5 flex items-center justify-center mr-4 border border-white/10 text-gray-500">
-                        <i class="fas fa-image text-lg"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-start mb-1">
-                            <h3 class="text-base font-bold text-white truncate">Riverside Lodge</h3>
-                            <span class="status-badge status-pending text-[10px] px-2 py-0.5">Pending</span>
-                        </div>
-                        <p class="text-gray-400 text-xs mb-1"><i class="fas fa-map-marker-alt text-brand-gold mr-1"></i>
-                            Checkpoint</p>
-                        <div class="flex items-center gap-3 text-[10px] text-gray-500">
-                            <span><i class="fas fa-clock mr-1"></i> Waiting</span>
-                            <span><i class="fas fa-calendar mr-1"></i> 4h ago</span>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-1.5 ml-3">
-                        <button class="text-gray-400 bg-white/5 cursor-not-allowed p-1.5 rounded-md text-xs"><i
-                                class="fas fa-lock"></i></button>
-                    </div>
-                </div>
-
+            <div id="listings-container" class="space-y-3 animate-fade-in-up delay-100">
+                <div class="text-center py-10"><i class="fas fa-spinner fa-spin text-2xl text-brand-gold"></i></div>
             </div>
         </div>
     </main>

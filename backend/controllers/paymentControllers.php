@@ -213,7 +213,7 @@ class paymentControllers
                 <table class="icon-align-table">
                     <tr>
                         <td><svg class="icon-svg" viewBox="0 0 24 24"><path fill="#3b82f6" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></td>
-                        <td>hosteLink@gmail.com</td>
+                        <td>aku.hosteLink@gmail.com</td>
                     </tr>
                 </table>
             </td>
@@ -356,6 +356,66 @@ HTML;
                 'charge' => $downloadCharge,
                 'receiptID' => $receiptID
             ]));
+            return $res->withStatus(200)->withHeader('Content-Type', 'application/json');
+        } catch (Exception $e) {
+            $res->getBody()->write(json_encode(['success' => false, 'message' => $e->getMessage()]));
+            return $res->withStatus(500)->withHeader('Content-Type', 'application/json');
+        }
+    }
+
+    /**
+     * Return detailed payment info including hostel name/location, date, amount and status.
+     * Authorization: student who paid, agent owning the hostel, or admin.
+     */
+    public function getPaymentDetails($req, $res)
+    {
+        try {
+            $user = $this->verifyToken($req->getHeaderLine('Authorization'));
+            if (!$user) {
+                $res->getBody()->write(json_encode(['success' => false, 'message' => 'Unauthorized']));
+                return $res->withStatus(403)->withHeader('Content-Type', 'application/json');
+            }
+
+            $body = $req->getParsedBody();
+            $paymentID = $body['paymentID'] ?? '';
+            if (empty($paymentID)) {
+                $res->getBody()->write(json_encode(['success' => false, 'message' => 'Payment ID required']));
+                return $res->withStatus(400)->withHeader('Content-Type', 'application/json');
+            }
+
+            $payment = Payment::where('paymentID', $paymentID)->with('hostel')->first();
+            if (!$payment) {
+                $res->getBody()->write(json_encode(['success' => false, 'message' => 'Payment not found']));
+                return $res->withStatus(404)->withHeader('Content-Type', 'application/json');
+            }
+
+            // Authorization: allow if student who paid, admin, or agent who owns the hostel
+            $authorized = false;
+            if ($user->role === 'admin' || $payment->studentID === $user->ID) {
+                $authorized = true;
+            }
+            if (!$authorized && $user->role === 'agent' && $payment->hostel && $payment->hostel->agentID === $user->ID) {
+                $authorized = true;
+            }
+            if (!$authorized) {
+                $res->getBody()->write(json_encode(['success' => false, 'message' => 'Forbidden']));
+                return $res->withStatus(403)->withHeader('Content-Type', 'application/json');
+            }
+
+            $payload = [
+                'paymentID' => $payment->paymentID,
+                'hostelID' => $payment->hostelID,
+                'hostelName' => $payment->hostel ? ($payment->hostel->name ?? null) : null,
+                'hostelLocation' => $payment->hostel ? ($payment->hostel->location ?? null) : null,
+                'studentID' => $payment->studentID,
+                'amount' => $payment->amount,
+                'status' => $payment->status,
+                'paidAt' => $payment->paidAt ?? $payment->createdAt,
+                'reference' => $payment->reference ?? null,
+                'createdAt' => $payment->createdAt ?? null,
+            ];
+
+            $res->getBody()->write(json_encode(['success' => true, 'payment' => $payload]));
             return $res->withStatus(200)->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
             $res->getBody()->write(json_encode(['success' => false, 'message' => $e->getMessage()]));

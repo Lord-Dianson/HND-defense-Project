@@ -128,10 +128,25 @@ class AgentControllers extends PaymentControllers
                 $res->getBody()->write(json_encode(['success' => false, 'message' => 'Unauthorized']));
                 return $res->withStatus(403)->withHeader('Content-Type', 'application/json');
             }
-
+            // Get hostels for this agent and include related hostel info on each payment
             $hostels = Hostel::where('agentID', $agent->ID)->pluck('hostelID');
-            $payments = Payment::whereIn('hostelID', $hostels)->get();
-            $res->getBody()->write(json_encode(['success' => true, 'count' => count($payments), 'payments' => $payments]));
+            $payments = Payment::whereIn('hostelID', $hostels)->with('hostel')->get();
+
+            $formatted = $payments->map(function ($p) {
+                return [
+                    'paymentID' => $p->paymentID,
+                    'hostelID' => $p->hostelID,
+                    'hostelName' => $p->hostel ? ($p->hostel->name ?? null) : null,
+                    'hostelLocation' => $p->hostel ? ($p->hostel->location ?? null) : null,
+                    'studentID' => $p->studentID,
+                    'amount' => $p->amount,
+                    'status' => $p->status,
+                    'paidAt' => $p->paidAt ?? $p->createdAt,
+                    'reference' => $p->reference ?? null,
+                ];
+            });
+
+            $res->getBody()->write(json_encode(['success' => true, 'count' => count($formatted), 'payments' => $formatted]));
             return $res->withStatus(200)->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
             $res->getBody()->write(json_encode(['success' => false, 'message' => $e->getMessage()]));

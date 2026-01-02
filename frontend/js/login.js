@@ -17,26 +17,25 @@ function togglePassword() {
     }
 }
 
-import { getCurrentAccount, saveAccount, setCurrentAccount, isSessionValid, setLoginTimestamp } from './utils.js';
+import { getCurrentAccount, saveAccount, setCurrentAccount, isSessionValid, setLoginTimestamp, setPreference } from './utils.js';
 import { showToast } from './toast.js';
 // axios is loaded globally via CDN
 
 // Check if user is already logged in with valid session
-(async function checkExistingSession() {
-    const user = await getCurrentAccount();
-    if (user && await isSessionValid()) {
-        // Redirect to appropriate dashboard
-        let dashboardUrl = '../index.html';
-        if (user.role === 'admin' || user.role === 'super_admin') {
-            dashboardUrl = '../superAdmin/mainDashboard.html';
-        } else if (user.role === 'agent') {
-            dashboardUrl = '../agent/profile.html';
-        } else if (user.role === 'student') {
-            dashboardUrl = '../student/profile.html';
-        }
-        window.location.href = dashboardUrl;
+// Check if user is already logged in with valid session
+// Auto-login logic removed per user request
+
+function redirectToDashboard(user) {
+    let dashboardUrl = '../index.html';
+    if (user.role === 'admin' || user.role === 'super_admin') {
+        dashboardUrl = '../superAdmin/mainDashboard.html';
+    } else if (user.role === 'agent') {
+        dashboardUrl = '../agent/profile.html';
+    } else if (user.role === 'student') {
+        dashboardUrl = '../student/profile.html';
     }
-})();
+    window.location.href = dashboardUrl;
+}
 
 // Form Submission
 const loginForm = document.getElementById('login-form');
@@ -70,8 +69,18 @@ loginForm.addEventListener('submit', async function (e) {
             await saveAccount(user);
             await setCurrentAccount(user.id);
 
+            // Store strictly in agent_info or user_info as requested
+            if (user.role === 'agent') {
+                await setPreference('agent_info', JSON.stringify(user));
+            } else {
+                await setPreference('user_info', JSON.stringify(user));
+            }
+
             // Set login timestamp for session management
             await setLoginTimestamp(user.id);
+
+            console.log(`Logged in as ${user.name} (ID: ${user.id}, Role: ${user.role})`);
+            console.log('Current account set to:', user.id);
 
             // Redirect based on role
             let dashboardUrl = '../index.html'; // Default
@@ -83,6 +92,8 @@ loginForm.addEventListener('submit', async function (e) {
                 dashboardUrl = '../student/profile.html';
             }
 
+            // Small delay to ensure preferences are saved
+            await new Promise(resolve => setTimeout(resolve, 100));
             window.location.href = dashboardUrl;
         } else {
             showToast(response.data.message || 'Login failed.', 'error');
